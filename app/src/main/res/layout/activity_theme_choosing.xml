@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center"
+    tools:context=".ThemeChoosingActivity">
+
+    <Button
+        android:id="@+id/btn_theme_warm"
+        android:layout_width="@dimen/btn_width"
+        android:layout_height="wrap_content"
+        android:text="@string/title_warm_theme"
+        android:background="@color/colorPrimaryWarm"
+        android:textColor="@android:color/white"
+        android:layout_margin="@dimen/standart_margin"
+        android:padding="@dimen/standart_padding"/>
+
+    <Button
+        android:id="@+id/btn_theme_cold"
+        android:layout_width="@dimen/btn_width"
+        android:layout_height="wrap_content"
+        android:text="@string/title_cold_theme"
+        android:background="@color/colorPrimaryCold"
+        android:textColor="@android:color/white"
+        android:layout_margin="@dimen/standart_margin"
+        android:padding="@dimen/standart_padding" />
+
+</LinearLayout>

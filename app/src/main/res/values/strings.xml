@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My Material Design Application</string>
+    <string name="title_warm_theme">Warm Theme</string>
+    <string name="title_cold_theme">Cold Theme</string>
+</resources>

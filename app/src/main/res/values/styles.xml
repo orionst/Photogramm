@@ -1,0 +1,29 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+    </style>
+
+    <style name="AppThemeWarm" parent="AppTheme.Base">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryWarm</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkWarm</item>
+        <item name="colorAccent">@color/colorAccentWarm</item>
+        <item name="android:textColorPrimary">@color/textColorPrimaryWarm</item>
+        <item name="android:navigationBarColor">@color/navigationBarColorWarm</item>
+    </style>
+
+    <style name="AppThemeCold" parent="AppTheme.Base">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryCold</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkCold</item>
+        <item name="colorAccent">@color/colorAccentCold</item>
+        <item name="android:textColorPrimary">@color/textColorPrimaryCold</item>
+        <item name="android:navigationBarColor">@color/navigationBarColorCold</item>
+    </style>
+</resources>
