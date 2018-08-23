@@ -1,6 +1,14 @@
 <resources>
-    <string name="app_name">My Material Design Application</string>
+    <string name="app_name">Photogramm</string>
     <string name="title_warm_theme">Warm Theme</string>
     <string name="title_cold_theme">Cold Theme</string>
     <string name="menu_item_change_theme">Change theme</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_item_photoes">Photos</string>
+    <string name="nav_bar_title">Photogramm</string>
 </resources>
