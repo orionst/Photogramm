@@ -3,6 +3,7 @@ package com.orionst.mymaterialdesignapp;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment).commit();
 
-        if (android.os.Build.VERSION.SDK_INT >= 23) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int readPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
             int writePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
