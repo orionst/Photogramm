@@ -23,7 +23,7 @@ public class PhotoViewModel extends AndroidViewModel {
         mAllPhotos = mRepository.getAllPhotos();
     }
 
-    public LiveData<List<Photo>> getAllWords() {
+    public LiveData<List<Photo>> getAllPhotos() {
         return mAllPhotos;
     }
 

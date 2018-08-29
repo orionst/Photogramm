@@ -1,22 +1,17 @@
 package com.orionst.mymaterialdesignapp;
 
 import android.Manifest;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,23 +20,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.orionst.mymaterialdesignapp.fragments.OnFragmentInteractionListener;
 import com.orionst.mymaterialdesignapp.fragments.PhotoListFragment;
-import com.orionst.mymaterialdesignapp.fragments.ThemeChoosingFragment;
 import com.orionst.mymaterialdesignapp.utils.OnActivityResultListener;
 import com.orionst.mymaterialdesignapp.utils.SharedPrefs;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     int currentTheme;
-
-    //private Fragment fragment;
-    private FragmentManager fragmentManager;
 
     DrawerLayout drawer;
 
@@ -49,18 +34,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     final int REQUEST_CODE_PHOTO = 1;
     public OnActivityResultListener onActivityResultListener;
 
-    private Uri photoURI;
+//    private Uri photoURI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        currentTheme = SharedPrefs.getCurrentTheme(this);
-        setTheme(currentTheme);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        if (savedInstanceState != null) {
-            photoURI= savedInstanceState.getParcelable("outputFileUri");
-        }
+        initActivity();
+
+//        if (savedInstanceState != null) {
+//            photoURI= savedInstanceState.getParcelable("outputFileUri");
+//        }
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        Resources.Theme theme = super.getTheme();
+        theme.applyStyle(SharedPrefs.getCurrentTheme(this), true);
+        return theme;
+    }
+
+    private void initActivity() {
+        setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = PhotoListFragment.newInstance();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment).commit();
@@ -95,20 +90,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         onActivityResultListener = (OnActivityResultListener) fragment;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        onActivityResultListener.onActivityResultTest(requestCode, resultCode, photoURI);
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        if (currentTheme != SharedPrefs.getCurrentTheme(this)) {
-            recreate();
-        }
     }
 
     @Override
@@ -137,68 +118,68 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Fragment fragment = PhotoListFragment.newInstance();
+        Intent intent;
         int id = menuItem.getItemId();
         switch (id) {
             case R.id.menu_item_main:
-                fragment = PhotoListFragment.newInstance();
+                Fragment fragment = PhotoListFragment.newInstance();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment).commit();
                 break;
             case R.id.menu_item_change_theme:
-                fragment = ThemeChoosingFragment.newInstance();
+                intent = new Intent(this, ThemeChoosingActivity.class);
+                startActivity(intent);
                 break;
         }
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment).commit();
-
-        menuItem.setChecked(true);
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-    public void makePicture() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                photoURI = FileProvider.getUriForFile(this,
-                        getPackageName() + ".fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_CODE_PHOTO, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-            }
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable("outputFileUri", photoURI);
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        return image;
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        onActivityResultListener.onActivityResultTest(requestCode, resultCode, photoURI);
+//    }
+//
+//    public void makePicture() {
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//            File photoFile = null;
+//            try {
+//                photoFile = createImageFile();
+//            } catch (IOException ex) {
+//                // Error occurred while creating the File
+//            }
+//            // Continue only if the File was successfully created
+//            if (photoFile != null) {
+//                photoURI = FileProvider.getUriForFile(this,
+//                        getPackageName() + ".fileprovider",
+//                        photoFile);
+//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                startActivityForResult(takePictureIntent, REQUEST_CODE_PHOTO, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+//            }
+//        }
+//    }
+//
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putParcelable("outputFileUri", photoURI);
+//    }
+//
+//    private File createImageFile() throws IOException {
+//        // Create an image file name
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//        String imageFileName = "JPEG_" + timeStamp + "_";
+//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//        File image = File.createTempFile(
+//                imageFileName,  /* prefix */
+//                ".jpg",         /* suffix */
+//                storageDir      /* directory */
+//        );
+//        return image;
+//    }
 
 }
