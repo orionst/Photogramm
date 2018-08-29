@@ -1,7 +1,6 @@
 package com.orionst.mymaterialdesignapp.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.database.model.Photo;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -42,8 +41,14 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
         } else {
             holder.favoriteView.setImageResource(R.drawable.ic_favorite_false);
         }
-        Uri uri = item.getPhotoUri();
-        holder.bind(uri);
+        Glide.with(mInflater.getContext())
+                .load(item.getPhotoUri())
+                .into(holder.photoView);
+
+//        Picasso.with(mInflater.getContext())
+//                .load(item.getPhotoUri())
+//                .into(holder.photoView);
+
         holder.favoriteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,11 +81,6 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
             this.favoriteView = itemView.findViewById(R.id.favorite);
         }
 
-        public void bind(Uri uri) {
-            Picasso.with(itemView.getContext())
-                    .load(uri)
-                    .into(photoView);
-        }
     }
 
     interface EntitiesListener {
