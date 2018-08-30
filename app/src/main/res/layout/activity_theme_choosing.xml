@@ -34,7 +34,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/standard_button_margin"
             android:background="@color/colorPrimaryWarm"
-            android:onClick="setTheme"
             android:padding="@dimen/standard_button_padding"
             android:text="@string/title_warm_theme"
             android:textColor="@android:color/white" />
@@ -45,7 +44,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/standard_button_margin"
             android:background="@color/colorPrimaryCold"
-            android:onClick="setTheme"
             android:padding="@dimen/standard_button_padding"
             android:text="@string/title_cold_theme"
             android:textColor="@android:color/white" />
