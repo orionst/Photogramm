@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.database.model.Photo;
-import com.orionst.mymaterialdesignapp.utils.OnActivityResultListener;
 import com.orionst.mymaterialdesignapp.viewmodels.PhotoViewModel;
 
 import java.io.File;
@@ -28,7 +27,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class PhotoListFragment extends Fragment implements PhotoListAdapter.EntitiesListener, OnActivityResultListener {
+public class PhotoListFragment extends Fragment implements PhotoListAdapter.EntitiesListener {
 
     private final int REQUEST_CODE_PHOTO = 1;
 
@@ -47,7 +46,6 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (savedInstanceState != null) {
             photoURI= savedInstanceState.getParcelable("outputFileUri");
         }
@@ -78,16 +76,6 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
         mPhotoViewModel.update(item);
         Snackbar.make(this.getView(), (item.isFavorite()) ? getString(R.string.alert_photo_set_favorite) : getString(R.string.alert_photo_unset_favorite), Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
-    }
-
-    @Override
-    public void onActivityResultTest(int requestCode, int resultCode, Uri photoURI) {
-        if (requestCode == REQUEST_CODE_PHOTO && resultCode == Activity.RESULT_OK) {
-            mPhotoViewModel.insert(photoURI);
-            Snackbar.make(this.getView(), R.string.alert_photo_added, Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
-        }
-
     }
 
     @Override

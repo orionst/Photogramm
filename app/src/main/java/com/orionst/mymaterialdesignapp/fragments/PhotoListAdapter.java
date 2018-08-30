@@ -11,8 +11,11 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.database.model.Photo;
+import com.orionst.mymaterialdesignapp.utils.CropSquareTransformation;
 
 import java.util.List;
+
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.PhotoViewHolder>{
 
@@ -43,11 +46,8 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
         }
         Glide.with(mInflater.getContext())
                 .load(item.getPhotoUri())
+                .apply(bitmapTransform(new CropSquareTransformation()))
                 .into(holder.photoView);
-
-//        Picasso.with(mInflater.getContext())
-//                .load(item.getPhotoUri())
-//                .into(holder.photoView);
 
         holder.favoriteView.setOnClickListener(new View.OnClickListener() {
             @Override
