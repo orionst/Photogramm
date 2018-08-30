@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Photogramm</string>
+    <string name="title_warm_theme">Теплая тема</string>
+    <string name="title_cold_theme">Холодная тема</string>
+    <string name="menu_item_change_theme">Сменить тему</string>
+    <string name="menu_item_photoes">Фотографии</string>
+    <string name="nav_bar_title">Photogramm</string>
+    <string name="alert_photo_added">Фото добавлено в коллекцию</string>
+    <string name="alert_photo_set_favorite">Фото добавлено в избранное</string>
+    <string name="alert_photo_unset_favorite">Фото удалено из избранного</string>
+</resources>

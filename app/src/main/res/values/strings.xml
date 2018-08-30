@@ -3,12 +3,12 @@
     <string name="title_warm_theme">Warm Theme</string>
     <string name="title_cold_theme">Cold Theme</string>
     <string name="menu_item_change_theme">Change theme</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_item_photoes">Photos</string>
     <string name="nav_bar_title">Photogramm</string>
+    <string name="alert_photo_added">Photo added to the collection</string>
+    <string name="alert_photo_set_favorite">Photo added to the favorites</string>
+    <string name="alert_photo_unset_favorite">Photo removed from the favorites</string>
+    <string name="fab_behavior_name">com.orionst.mymaterialdesignapp.utils.FabHideOnScroll</string>
 </resources>

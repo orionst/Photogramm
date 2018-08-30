@@ -1,15 +1,14 @@
 package com.orionst.mymaterialdesignapp;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,17 +17,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.orionst.mymaterialdesignapp.fragments.OnFragmentInteractionListener;
 import com.orionst.mymaterialdesignapp.fragments.PhotoListFragment;
-import com.orionst.mymaterialdesignapp.fragments.ThemeChoosingFragment;
 import com.orionst.mymaterialdesignapp.utils.SharedPrefs;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener {
-
-    int currentTheme;
-
-    private Fragment fragment;
-    private FragmentManager fragmentManager;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawer;
 
@@ -36,8 +28,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        currentTheme = SharedPrefs.getCurrentTheme(this);
-        setTheme(currentTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -53,12 +43,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        fragmentManager = getSupportFragmentManager();
-        fragment = PhotoListFragment.newInstance();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment).commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, PhotoListFragment.newInstance())
+                    .commit();
+        }
 
-        if (android.os.Build.VERSION.SDK_INT >= 23) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int readPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
             int writePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -75,11 +67,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        if (currentTheme != SharedPrefs.getCurrentTheme(this)) {
-            recreate();
-        }
+    public Resources.Theme getTheme() {
+        Resources.Theme theme = super.getTheme();
+        theme.applyStyle(SharedPrefs.getCurrentTheme(this), true);
+        return theme;
     }
 
     @Override
@@ -91,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch(id){
-            case R.id.menu_item_change_theme :
+        switch (id) {
+            case R.id.menu_item_change_theme:
 //                Intent intent = new Intent(this, ThemeChoosingActivity.class);
 //                startActivity(intent);
                 return true;
@@ -102,29 +93,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        Intent intent;
         int id = menuItem.getItemId();
-        switch(id){
-            case R.id.menu_item_main :
-                fragment = PhotoListFragment.newInstance();
+        switch (id) {
+            case R.id.menu_item_main:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, PhotoListFragment.newInstance())
+                        .commit();
                 break;
-            case R.id.menu_item_change_theme :
-                fragment = ThemeChoosingFragment.newInstance();
+            case R.id.menu_item_change_theme:
+                intent = new Intent(this, ThemeChoosingActivity.class);
+                startActivity(intent);
                 break;
         }
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment).commit();
-
-        menuItem.setChecked(true);
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
 
 }
