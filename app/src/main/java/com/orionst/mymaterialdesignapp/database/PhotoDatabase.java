@@ -13,7 +13,7 @@ public abstract class PhotoDatabase extends RoomDatabase{
 
     public abstract PhotoDao PhotoDao();
 
-    private static PhotoDatabase DB_INSTANCE;
+    private static volatile PhotoDatabase DB_INSTANCE;
 
     public static PhotoDatabase getDatabase(final Context context) {
         if (DB_INSTANCE == null) {

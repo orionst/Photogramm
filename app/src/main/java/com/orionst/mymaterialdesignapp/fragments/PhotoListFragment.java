@@ -106,7 +106,7 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 photoURI = FileProvider.getUriForFile(getContext(),
-                        getActivity().getPackageName() + ".fileprovider",
+                        getString(R.string.authority_name),
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_CODE_PHOTO);

@@ -53,7 +53,6 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
             @Override
             public void onClick(View view) {
                 mPhotoListener.onEntityChange(item);
-                //notifyDataSetChanged();
                 notifyItemChanged(position, item);
             }
         });

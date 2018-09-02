@@ -32,6 +32,7 @@ public class PhotoViewModel extends AndroidViewModel {
     }
 
     public void update(Photo photo) {
+        photo.setFavorite(!photo.isFavorite());
         mRepository.update(photo);
     }
 
