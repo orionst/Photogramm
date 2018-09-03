@@ -23,5 +23,7 @@ public interface PhotoDao {
     @Query("SELECT * from photos")
     LiveData<List<Photo>> getAllPhotos();
 
+    @Query("DELETE FROM photos WHERE uri = :path")
+    void deleteByUri(String path);
 
 }

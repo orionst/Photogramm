@@ -2,13 +2,20 @@ package com.orionst.mymaterialdesignapp.repositories;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 
+import com.orionst.mymaterialdesignapp.PhotogrammApplication;
 import com.orionst.mymaterialdesignapp.database.PhotoDatabase;
 import com.orionst.mymaterialdesignapp.database.dao.PhotoDao;
 import com.orionst.mymaterialdesignapp.database.model.Photo;
 
+import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class PhotoRepository {
 
@@ -24,20 +31,6 @@ public class PhotoRepository {
     public LiveData<List<Photo>> getAllPhotos() {
         return mAllPhotos;
     }
-
-//    protected LiveData<List<Photo>> getAllPhotos() {
-//        List<Photo> photos = new ArrayList<>();
-//        String[] list = PhotoListFragment.newInstance().storageDir.list(new FilenameFilter() {
-//            @Override
-//            public boolean accept(File dir, String name) {
-//                return name.contains(".jpg");
-//            }
-//        });
-//        for (:) {
-//            Uri contentUri = Uri.parse(list)
-//        }
-//        return photos;
-//    }
 
     //INSERT
     public void insert(Photo photo) {
@@ -76,6 +69,63 @@ public class PhotoRepository {
         protected Void doInBackground(final Photo... params) {
             mAsyncTaskDao.update(params[0]);
             return null;
+        }
+    }
+
+    //DELETE
+    public boolean delete(Photo photo) {
+        AsyncTask<Photo, Void, Boolean> task = new deleteByIdAsyncTask(mPhotoDao);
+        try {
+            return task.execute(photo).get(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private static class deleteByIdAsyncTask extends AsyncTask<Photo, Void, Boolean> {
+
+        private PhotoDao mAsyncTaskDao;
+
+        deleteByIdAsyncTask(PhotoDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Boolean doInBackground(final Photo... params) {
+            //return deleteUriFile(params[0].getPhotoUri());    // не удаляет почему-то
+            String filePath = PhotogrammApplication.context().getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath()
+                    + "/"
+                    + params[0].getPhotoUri().getLastPathSegment();
+            if (deletePhotoFile(filePath)) {
+                mAsyncTaskDao.deleteByUri(params[0].getPhotoUri().toString());
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        private boolean deleteUriFile(Uri uri) {
+            if (PhotogrammApplication.context().getContentResolver().delete(uri, null, null) >=1) {
+                return true;
+            }
+            return false;
+        }
+
+        private boolean deletePhotoFile(String filePath) {
+            File fdelete = new File(filePath);
+            if (fdelete.exists()) {
+                if (fdelete.delete()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
         }
     }
 
