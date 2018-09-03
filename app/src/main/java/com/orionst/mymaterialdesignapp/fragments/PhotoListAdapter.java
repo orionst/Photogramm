@@ -2,7 +2,9 @@ package com.orionst.mymaterialdesignapp.fragments;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +15,9 @@ import com.bumptech.glide.Glide;
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.database.model.Photo;
 import com.orionst.mymaterialdesignapp.utils.CropSquareTransformation;
+import com.orionst.mymaterialdesignapp.utils.MyDiffCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
@@ -21,7 +25,7 @@ import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.PhotoViewHolder> {
 
     private final LayoutInflater mInflater;
-    private List<Photo> mPhotos;
+    private List<Photo> mPhotos = new ArrayList<>();
 
     private EntitiesListener mPhotoListener;
 
@@ -60,8 +64,11 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
     }
 
     void setPhotos(List<Photo> photos) {
-        this.mPhotos = photos;
-        notifyDataSetChanged();
+        Log.v("TAG", "old list "+mPhotos.size()+" new list "+photos.size());
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MyDiffCallback(this.mPhotos, photos));
+        diffResult.dispatchUpdatesTo(this);
+        this.mPhotos.clear();
+        this.mPhotos.addAll(photos);
     }
 
     class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -96,9 +103,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
 
                             switch (menuItem.getItemId()) {
                                 case R.id.action_item_delete:
-                                    if (mPhotoListener.onEntityDelete(position)) {
-                                        mPhotos.remove(position);
-                                    }
+                                    mPhotoListener.onEntityDelete(position);
                                     break;
                                 default:
                                     break;
@@ -115,7 +120,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
 
     interface EntitiesListener {
         void onEntityChange(int item);
-        boolean onEntityDelete(int item);
+        void onEntityDelete(int item);
     }
 
 
