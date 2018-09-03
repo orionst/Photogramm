@@ -35,7 +35,7 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
     private final int REQUEST_CODE_PHOTO = 1;
 
     private PhotoViewModel mPhotoViewModel;
-
+    PhotoListAdapter adapter;
     private Uri photoURI;
 
     public PhotoListFragment() {
@@ -62,7 +62,7 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
         fab.setOnClickListener(view -> dispatchTakePictureIntent());
 
         RecyclerView recyclerView = layout.findViewById(R.id.photos_recyclerview);
-        final PhotoListAdapter adapter = new PhotoListAdapter(layout.getContext(), this);
+        adapter = new PhotoListAdapter(layout.getContext(), this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(layout.getContext(),
@@ -80,17 +80,20 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
     }
 
     @Override
-    public void onEntityChange(Photo item) {
+    public void onEntityChange(int position) {
+        Photo item = mPhotoViewModel.getAllPhotos().getValue().get(position);
         mPhotoViewModel.update(item);
+        adapter.notifyDataSetChanged();
         Snackbar.make(this.getView(), (item.isFavorite()) ? getString(R.string.alert_photo_set_favorite) : getString(R.string.alert_photo_unset_favorite), Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
     }
 
     @Override
-    public boolean onEntityDelete(Photo item) {
-        if (mPhotoViewModel.delete(item)) {
+    public boolean onEntityDelete(int position) {
+        if (mPhotoViewModel.delete(mPhotoViewModel.getAllPhotos().getValue().get(position))) {
             Snackbar.make(this.getView(), "Photo has been deleted", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
+            adapter.notifyItemRemoved(position);
             return true;
         } else {
             Snackbar.make(this.getView(), "Something has wrong", Snackbar.LENGTH_SHORT)

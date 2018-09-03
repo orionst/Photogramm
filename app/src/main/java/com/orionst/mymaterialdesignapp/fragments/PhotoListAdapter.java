@@ -49,32 +49,6 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
                 .load(item.getPhotoUri())
                 .apply(bitmapTransform(new CropSquareTransformation()))
                 .into(holder.photoView);
-
-        holder.favoriteView.setOnClickListener(view -> {
-            mPhotoListener.onEntityChange(item);
-            notifyItemChanged(position, item);
-        });
-        holder.txtOptionDigit.setOnClickListener(view -> {
-            //Display option menu
-            android.support.v7.widget.PopupMenu popupMenu = new android.support.v7.widget.PopupMenu(holder.txtOptionDigit.getContext(), holder.txtOptionDigit);
-            popupMenu.inflate(R.menu.menu_action_mode);
-            popupMenu.setOnMenuItemClickListener(menuItem -> {
-
-                switch (menuItem.getItemId()) {
-                    case R.id.action_item_delete:
-                        if (mPhotoListener.onEntityDelete(item)) {
-                            mPhotos.remove(position);
-                            notifyItemRemoved(position);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                return false;
-            });
-            popupMenu.show();
-        });
-
     }
 
     @Override
@@ -90,7 +64,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
         notifyDataSetChanged();
     }
 
-    class PhotoViewHolder extends RecyclerView.ViewHolder {
+    class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView photoView;
         private final ImageView favoriteView;
         private final TextView txtOptionDigit;
@@ -99,16 +73,49 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
             super(itemView);
             this.photoView = itemView.findViewById(R.id.picture);
             this.favoriteView = itemView.findViewById(R.id.favorite);
-            txtOptionDigit = itemView.findViewById(R.id.txtOptionDigit);
+            this.txtOptionDigit = itemView.findViewById(R.id.txtOptionDigit);
+
+            this.favoriteView.setOnClickListener(this::onClick);
+            this.txtOptionDigit.setOnClickListener(this::onClick);
         }
 
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                switch (view.getId()) {
 
+                    case R.id.favorite:
+                        mPhotoListener.onEntityChange(position);
+                        break;
+
+                    case R.id.txtOptionDigit:
+                        //Display option menu
+                        android.support.v7.widget.PopupMenu popupMenu = new android.support.v7.widget.PopupMenu(this.txtOptionDigit.getContext(), this.txtOptionDigit);
+                        popupMenu.inflate(R.menu.menu_action_mode);
+                        popupMenu.setOnMenuItemClickListener(menuItem -> {
+
+                            switch (menuItem.getItemId()) {
+                                case R.id.action_item_delete:
+                                    if (mPhotoListener.onEntityDelete(position)) {
+                                        mPhotos.remove(position);
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            return false;
+                        });
+                        popupMenu.show();
+                        break;
+                }
+            }
+        }
     }
 
-    interface EntitiesListener {
-        void onEntityChange(Photo item);
 
-        boolean onEntityDelete(Photo item);
+    interface EntitiesListener {
+        void onEntityChange(int item);
+        boolean onEntityDelete(int item);
     }
 
 
