@@ -22,8 +22,13 @@ public class ThemeChoosingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        Button btnSetStandard= findViewById(R.id.btn_theme_standard);
         Button btnSetWarm = findViewById(R.id.btn_theme_warm);
         Button btnSetCold = findViewById(R.id.btn_theme_cold);
+        btnSetStandard.setOnClickListener(view -> {
+            SharedPrefs.saveCurrentTheme(this, R.style.AppTheme_Base);
+            applyTheme();
+        });
         btnSetWarm.setOnClickListener(view -> {
             SharedPrefs.saveCurrentTheme(this, R.style.AppThemeWarm);
             applyTheme();
@@ -47,4 +52,5 @@ public class ThemeChoosingActivity extends AppCompatActivity {
                 .startActivities();
         finish();
     }
+
 }

@@ -1,14 +1,10 @@
 package com.orionst.mymaterialdesignapp;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -49,21 +45,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .replace(R.id.fragment_container, PhotoListFragment.newInstance())
                     .commit();
         }
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int readPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-            int writePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-            if (writePermission != PackageManager.PERMISSION_GRANTED ||
-                    readPermission != PackageManager.PERMISSION_GRANTED) {
-                // If don't have permission so prompt the user.
-                this.requestPermissions(
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PERMISSION_REQUEST_CODE
-                );
-            }
-        }
     }
 
     @Override
@@ -93,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Intent intent;
         int id = menuItem.getItemId();
         switch (id) {
             case R.id.menu_item_main:
@@ -103,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 break;
             case R.id.menu_item_change_theme:
-                intent = new Intent(this, ThemeChoosingActivity.class);
+                Intent intent = new Intent(this, ThemeChoosingActivity.class);
                 startActivity(intent);
                 break;
         }

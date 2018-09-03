@@ -1,8 +1,10 @@
 package com.orionst.mymaterialdesignapp.fragments;
 
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class PhotoListFragment extends Fragment implements PhotoListAdapter.EntitiesListener {
 
@@ -62,20 +65,38 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
         final PhotoListAdapter adapter = new PhotoListAdapter(layout.getContext(), this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(layout.getContext(), 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(layout.getContext(),
+                (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)? 3 : 2));
 
         mPhotoViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
-        mPhotoViewModel.getAllPhotos().observe(this, photos -> adapter.setPhotos(photos));
+        mPhotoViewModel.getAllPhotos().observe(this, new Observer<List<Photo>>() {
+            @Override
+            public void onChanged(@Nullable List<Photo> photos) {
+                adapter.setPhotos(photos);
+            }
+        });
 
         return layout;
     }
 
     @Override
     public void onEntityChange(Photo item) {
-        item.setFavorite(!item.isFavorite());
         mPhotoViewModel.update(item);
         Snackbar.make(this.getView(), (item.isFavorite()) ? getString(R.string.alert_photo_set_favorite) : getString(R.string.alert_photo_unset_favorite), Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
+    }
+
+    @Override
+    public boolean onEntityDelete(Photo item) {
+        if (mPhotoViewModel.delete(item)) {
+            Snackbar.make(this.getView(), "Photo has been deleted", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
+            return true;
+        } else {
+            Snackbar.make(this.getView(), "Something has wrong", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
+            return false;
+        }
     }
 
     @Override
@@ -106,7 +127,7 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 photoURI = FileProvider.getUriForFile(getContext(),
-                        getActivity().getPackageName() + ".fileprovider",
+                        getString(R.string.authority_name),
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_CODE_PHOTO);
