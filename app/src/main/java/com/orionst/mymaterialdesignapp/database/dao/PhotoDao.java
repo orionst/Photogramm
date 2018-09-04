@@ -20,7 +20,7 @@ public interface PhotoDao {
     @Update
     void update(Photo photo);
 
-    @Query("SELECT * from photos")
+    @Query("SELECT * from photos ORDER BY uri ASC")
     LiveData<List<Photo>> getAllPhotos();
 
     @Query("DELETE FROM photos WHERE uri = :path")
