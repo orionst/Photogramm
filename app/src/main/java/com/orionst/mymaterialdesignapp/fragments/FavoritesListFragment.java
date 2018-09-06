@@ -24,10 +24,10 @@ import com.orionst.mymaterialdesignapp.viewmodels.PhotoViewModel;
 public class FavoritesListFragment extends Fragment implements PhotoListAdapter.EntitiesListener {
 
     private PhotoViewModel mPhotoViewModel;
-    private static final String TAG = "Fragment";
+    private static final String TAG = "Holder";
 
     public FavoritesListFragment() {
-        Log.i(TAG, "Fragment Favotites");
+
     }
 
     public static FavoritesListFragment newInstance() {
@@ -43,6 +43,7 @@ public class FavoritesListFragment extends Fragment implements PhotoListAdapter.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_favorites_list, container, false);
+        Log.i(TAG, "fragment Favorites List - onCreateView");
 
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
 

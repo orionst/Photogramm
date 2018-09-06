@@ -12,10 +12,10 @@ import com.orionst.mymaterialdesignapp.R;
 
 public class OnlinePhotosFragment extends Fragment {
 
-    private static final String TAG = "Fragment";
+    private static final String TAG = "Holder";
 
     public OnlinePhotosFragment() {
-        Log.i(TAG, "Fragment Online");
+
     }
 
     public static OnlinePhotosFragment newInstance() {
@@ -31,6 +31,7 @@ public class OnlinePhotosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(TAG, "fragment Online Photos - onCreateView");
         return inflater.inflate(R.layout.fragment_online_photos, container, false);
     }
 

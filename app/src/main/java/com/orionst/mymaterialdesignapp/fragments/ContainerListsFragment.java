@@ -14,14 +14,14 @@ import com.orionst.mymaterialdesignapp.R;
 
 public class ContainerListsFragment extends Fragment {
 
-    private static final String TAG = "Fragment";
+    private static final String TAG = "Holder";
 
     public static final String TAG_DB = "db";
     public static final String TAG_INTERNET = "internet";
     public static final String TAG_COMMON = "common";
 
     public ContainerListsFragment() {
-        Log.i(TAG, "Fragment Container)");
+
     }
 
     public static ContainerListsFragment newInstance() {
@@ -37,6 +37,8 @@ public class ContainerListsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_container_lists, container, false);
+
+        Log.i(TAG, "fragment ContainerListsFragment - onCreateView");
 
         FragmentManager mFragmentManager = getChildFragmentManager();
 //        FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();

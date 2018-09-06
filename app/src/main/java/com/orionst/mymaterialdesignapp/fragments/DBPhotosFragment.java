@@ -12,10 +12,10 @@ import com.orionst.mymaterialdesignapp.R;
 
 public class DBPhotosFragment extends Fragment {
 
-    private static final String TAG = "Fragment";
+    private static final String TAG = "Holder";
 
     public DBPhotosFragment() {
-        Log.i(TAG, "Fragment DB");
+
     }
 
     public static DBPhotosFragment newInstance() {
@@ -30,7 +30,7 @@ public class DBPhotosFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.i(TAG, "Fragment Photo List inflating "+ container);
+        Log.i(TAG, "fragment DB Photos - onCreateView");
         return inflater.inflate(R.layout.fragment_db_photos, container, false);
     }
 

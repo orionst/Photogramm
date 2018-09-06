@@ -38,10 +38,10 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
     private PhotoViewModel mPhotoViewModel;
     private Uri photoURI;
 
-    private static final String TAG = "Fragment";
+    private static final String TAG = "Holder";
 
     public PhotoListFragment() {
-        Log.i(TAG, "Fragment Photo List");
+
     }
 
     public static PhotoListFragment newInstance() {
@@ -52,7 +52,6 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "Fragment Photo List - onCreateView");
         if (savedInstanceState != null) {
             photoURI = savedInstanceState.getParcelable("outputFileUri");
         }
@@ -62,7 +61,7 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_photo_list, container, false);
 
-        Log.i(TAG, "Fragment Photo List - onCreateView");
+        Log.i(TAG, "fragment Photo List - onCreateView");
 
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setOnClickListener(view -> dispatchTakePictureIntent());
@@ -76,6 +75,7 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
 
         mPhotoViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
         mPhotoViewModel.getAllPhotos().observe(this, photos -> adapter.setPhotos(photos));
+        adapter.notifyDataSetChanged();
 
         return layout;
     }

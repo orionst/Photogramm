@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
     private EntitiesListener mPhotoListener;
 
     public PhotoListAdapter(Context context, EntitiesListener entitiesListener) {
+        Log.d("Holder","new PhotoListAdapter");
         this.mInflater = LayoutInflater.from(context);
         this.mPhotoListener = entitiesListener;
     }
@@ -36,6 +38,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
     @NonNull
     @Override
     public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d("Holder","onCreateViewHolder "+parent);
         View itemView = mInflater.inflate(R.layout.item_photo_recyclerview, parent, false);
         return new PhotoViewHolder(itemView);
     }
@@ -60,6 +63,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
     }
 
     public void setPhotos(List<Photo> photos) {
+        Log.d("Holder","setPhotos count "+photos.size());
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MyDiffCallback(this.mPhotos, photos));
         diffResult.dispatchUpdatesTo(this);
         this.mPhotos.clear();
