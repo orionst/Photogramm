@@ -1,7 +1,6 @@
 package com.orionst.mymaterialdesignapp.fragments;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -16,29 +15,33 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.orionst.mymaterialdesignapp.R;
+import com.orionst.mymaterialdesignapp.ViewerActivity;
 import com.orionst.mymaterialdesignapp.database.model.Photo;
+import com.orionst.mymaterialdesignapp.fragments.adapters.PhotoListAdapter;
 import com.orionst.mymaterialdesignapp.viewmodels.PhotoViewModel;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 public class PhotoListFragment extends Fragment implements PhotoListAdapter.EntitiesListener {
 
     private final int REQUEST_CODE_PHOTO = 1;
 
     private PhotoViewModel mPhotoViewModel;
-    PhotoListAdapter adapter;
     private Uri photoURI;
 
+    private static final String TAG = "Fragment";
+
     public PhotoListFragment() {
+        Log.i(TAG, "Fragment Photo List");
     }
 
     public static PhotoListFragment newInstance() {
@@ -49,8 +52,9 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "Fragment Photo List - onCreateView");
         if (savedInstanceState != null) {
-            photoURI= savedInstanceState.getParcelable("outputFileUri");
+            photoURI = savedInstanceState.getParcelable("outputFileUri");
         }
     }
 
@@ -58,23 +62,20 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_photo_list, container, false);
 
+        Log.i(TAG, "Fragment Photo List - onCreateView");
+
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setOnClickListener(view -> dispatchTakePictureIntent());
 
         RecyclerView recyclerView = layout.findViewById(R.id.photos_recyclerview);
-        adapter = new PhotoListAdapter(layout.getContext(), this);
+        PhotoListAdapter adapter = new PhotoListAdapter(layout.getContext(), this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(layout.getContext(),
-                (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)? 3 : 2));
+                (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? 3 : 2));
 
         mPhotoViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
-        mPhotoViewModel.getAllPhotos().observe(this, new Observer<List<Photo>>() {
-            @Override
-            public void onChanged(@Nullable List<Photo> photos) {
-                adapter.setPhotos(photos);
-            }
-        });
+        mPhotoViewModel.getAllPhotos().observe(this, photos -> adapter.setPhotos(photos));
 
         return layout;
     }
@@ -83,7 +84,7 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
     public void onEntityChange(int position) {
         Photo item = mPhotoViewModel.getAllPhotos().getValue().get(position);
         mPhotoViewModel.update(item);
-        Snackbar.make(this.getView(), (item.isFavorite()) ? getString(R.string.alert_photo_set_favorite) : getString(R.string.alert_photo_unset_favorite), Snackbar.LENGTH_SHORT)
+        Snackbar.make(this.getView(), (item.isFavorite()) ? getString(R.string.alert_photo_unset_favorite) : getString(R.string.alert_photo_set_favorite), Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
     }
 
@@ -96,6 +97,14 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
             Snackbar.make(this.getView(), "Something has wrong", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
         }
+    }
+
+    @Override
+    public void onEntityOpen(int position) {
+        String photoUriString = mPhotoViewModel.getAllFavPhotos().getValue().get(position).getPhotoUri().toString();
+        Intent intent = new Intent(this.getActivity(), ViewerActivity.class);
+        intent.putExtra("photoUriString", photoUriString);
+        startActivity(intent);
     }
 
     @Override

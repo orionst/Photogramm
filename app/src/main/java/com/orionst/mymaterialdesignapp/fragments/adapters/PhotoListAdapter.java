@@ -1,10 +1,9 @@
-package com.orionst.mymaterialdesignapp.fragments;
+package com.orionst.mymaterialdesignapp.fragments.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.PhotoViewHolder> {
 
-    private final LayoutInflater mInflater;
+    private LayoutInflater mInflater;
     private List<Photo> mPhotos = new ArrayList<>();
 
     private EntitiesListener mPhotoListener;
@@ -57,14 +56,10 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
 
     @Override
     public int getItemCount() {
-        if (mPhotos == null) {
-            return 0;
-        }
         return mPhotos.size();
     }
 
-    void setPhotos(List<Photo> photos) {
-        Log.v("TAG", "old list "+mPhotos.size()+" new list "+photos.size());
+    public void setPhotos(List<Photo> photos) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MyDiffCallback(this.mPhotos, photos));
         diffResult.dispatchUpdatesTo(this);
         this.mPhotos.clear();
@@ -84,6 +79,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
 
             this.favoriteView.setOnClickListener(this::onClick);
             this.txtOptionDigit.setOnClickListener(this::onClick);
+            this.photoView.setOnClickListener(view -> mPhotoListener.onEntityOpen(getAdapterPosition()));
         }
 
         public void onClick(View view) {
@@ -118,9 +114,10 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
     }
 
 
-    interface EntitiesListener {
+    public interface EntitiesListener {
         void onEntityChange(int item);
         void onEntityDelete(int item);
+        void onEntityOpen(int item);
     }
 
 

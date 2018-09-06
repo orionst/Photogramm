@@ -21,15 +21,21 @@ public class PhotoRepository {
 
     private PhotoDao mPhotoDao;
     private LiveData<List<Photo>> mAllPhotos;
+    private LiveData<List<Photo>> mFavPhotos;
 
     public PhotoRepository(Application application) {
         PhotoDatabase db = PhotoDatabase.getDatabase(application);
         mPhotoDao = db.PhotoDao();
         mAllPhotos = mPhotoDao.getAllPhotos();
+        mFavPhotos = mPhotoDao.getAllFavoritePhotos();
     }
 
     public LiveData<List<Photo>> getAllPhotos() {
         return mAllPhotos;
+    }
+
+    public LiveData<List<Photo>> getFavPhotos() {
+        return mFavPhotos;
     }
 
     //INSERT
