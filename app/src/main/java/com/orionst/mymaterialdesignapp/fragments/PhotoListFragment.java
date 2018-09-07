@@ -75,7 +75,6 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
 
         mPhotoViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
         mPhotoViewModel.getAllPhotos().observe(this, photos -> adapter.setPhotos(photos));
-        adapter.notifyDataSetChanged();
 
         return layout;
     }
