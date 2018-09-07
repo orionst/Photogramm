@@ -16,15 +16,21 @@ public class PhotoViewModel extends AndroidViewModel {
     private PhotoRepository mRepository;
 
     private LiveData<List<Photo>> mAllPhotos;
+    private LiveData<List<Photo>> mFavPhotos;
 
     public PhotoViewModel(@NonNull Application application) {
         super(application);
         mRepository = new PhotoRepository(application);
         mAllPhotos = mRepository.getAllPhotos();
+        mFavPhotos = mRepository.getFavPhotos();
     }
 
     public LiveData<List<Photo>> getAllPhotos() {
         return mAllPhotos;
+    }
+
+    public LiveData<List<Photo>> getAllFavPhotos() {
+        return mFavPhotos;
     }
 
     public void insert(Uri photoUri) {

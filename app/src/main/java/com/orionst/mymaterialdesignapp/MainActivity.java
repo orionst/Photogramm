@@ -5,7 +5,9 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,13 +16,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.orionst.mymaterialdesignapp.fragments.PhotoListFragment;
+import com.orionst.mymaterialdesignapp.fragments.adapters.CustomFragmentPagerAdapter;
 import com.orionst.mymaterialdesignapp.utils.SharedPrefs;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawer;
-
-    private static final int PERMISSION_REQUEST_CODE = 10;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +41,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, PhotoListFragment.newInstance())
-                    .commit();
-        }
+        CustomFragmentPagerAdapter customFragmentPagerAdapter
+                = new CustomFragmentPagerAdapter(getSupportFragmentManager(), this);
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.page_container);
+        mViewPager.setAdapter(customFragmentPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
+
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .replace(R.id.fragment_container, PhotoListFragment.newInstance())
+//                    .commit();
+//        }
     }
 
     @Override

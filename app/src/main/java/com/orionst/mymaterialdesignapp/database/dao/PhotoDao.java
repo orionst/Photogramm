@@ -23,6 +23,9 @@ public interface PhotoDao {
     @Query("SELECT * from photos ORDER BY uri ASC")
     LiveData<List<Photo>> getAllPhotos();
 
+    @Query("SELECT * from photos WHERE favorite = 1 ORDER BY uri ASC")
+    LiveData<List<Photo>> getAllFavoritePhotos();
+
     @Query("DELETE FROM photos WHERE uri = :path")
     void deleteByUri(String path);
 

@@ -1,4 +1,4 @@
-package com.orionst.mymaterialdesignapp.fragments;
+package com.orionst.mymaterialdesignapp.fragments.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -24,12 +24,13 @@ import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.PhotoViewHolder> {
 
-    private final LayoutInflater mInflater;
+    private LayoutInflater mInflater;
     private List<Photo> mPhotos = new ArrayList<>();
 
     private EntitiesListener mPhotoListener;
 
     public PhotoListAdapter(Context context, EntitiesListener entitiesListener) {
+        Log.d("Holder","new PhotoListAdapter");
         this.mInflater = LayoutInflater.from(context);
         this.mPhotoListener = entitiesListener;
     }
@@ -37,6 +38,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
     @NonNull
     @Override
     public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d("Holder","onCreateViewHolder "+parent);
         View itemView = mInflater.inflate(R.layout.item_photo_recyclerview, parent, false);
         return new PhotoViewHolder(itemView);
     }
@@ -57,14 +59,11 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
 
     @Override
     public int getItemCount() {
-        if (mPhotos == null) {
-            return 0;
-        }
         return mPhotos.size();
     }
 
-    void setPhotos(List<Photo> photos) {
-        Log.v("TAG", "old list "+mPhotos.size()+" new list "+photos.size());
+    public void setPhotos(List<Photo> photos) {
+        Log.d("Holder","setPhotos count "+photos.size());
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MyDiffCallback(this.mPhotos, photos));
         diffResult.dispatchUpdatesTo(this);
         this.mPhotos.clear();
@@ -84,6 +83,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
 
             this.favoriteView.setOnClickListener(this::onClick);
             this.txtOptionDigit.setOnClickListener(this::onClick);
+            this.photoView.setOnClickListener(view -> mPhotoListener.onEntityOpen(getAdapterPosition()));
         }
 
         public void onClick(View view) {
@@ -118,9 +118,10 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
     }
 
 
-    interface EntitiesListener {
+    public interface EntitiesListener {
         void onEntityChange(int item);
         void onEntityDelete(int item);
+        void onEntityOpen(int item);
     }
 
 

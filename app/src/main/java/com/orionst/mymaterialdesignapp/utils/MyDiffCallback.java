@@ -18,9 +18,6 @@ public class MyDiffCallback extends DiffUtil.Callback{
 
     @Override
     public int getOldListSize() {
-        if (oldPhotos == null) {
-            return 0;
-        }
         return oldPhotos.size();
     }
 
