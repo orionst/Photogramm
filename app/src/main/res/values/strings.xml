@@ -10,9 +10,7 @@
     <string name="alert_photo_added">Photo added to the collection</string>
     <string name="alert_photo_set_favorite">Photo added to the favorites</string>
     <string name="alert_photo_unset_favorite">Photo removed from the favorites</string>
-    <string name="fab_behavior_name">com.orionst.mymaterialdesignapp.utils.FabHideOnScroll</string>
     <string name="menu_action_item_delete">Delete</string>
-    <string name="authority_name">com.orionst.mymaterialdesignapp.fileprovider</string>
     <string name="title_standard_theme">Standard</string>
     <string name="tab_text_1">Main</string>
     <string name="tab_text_2">Favorites</string>
@@ -24,10 +22,4 @@
     <string name="hello_db_fragment">Hello DB photos fragment</string>
     <string name="hello_online_fragment">Hello Online photos fragment</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
-    <string name="title_activity_viewer">ViewerActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

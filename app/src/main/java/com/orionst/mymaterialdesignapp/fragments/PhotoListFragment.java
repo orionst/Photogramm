@@ -63,7 +63,7 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
 
         Log.i(TAG, "fragment Photo List - onCreateView");
 
-        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = layout.findViewById(R.id.fab);
         fab.setOnClickListener(view -> dispatchTakePictureIntent());
 
         RecyclerView recyclerView = layout.findViewById(R.id.photos_recyclerview);
@@ -100,7 +100,7 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
 
     @Override
     public void onEntityOpen(int position) {
-        String photoUriString = mPhotoViewModel.getAllFavPhotos().getValue().get(position).getPhotoUri().toString();
+        String photoUriString = mPhotoViewModel.getAllPhotos().getValue().get(position).getPhotoUri().toString();
         Intent intent = new Intent(this.getActivity(), ViewerActivity.class);
         intent.putExtra("photoUriString", photoUriString);
         startActivity(intent);

@@ -11,26 +11,16 @@
         android:layout_alignParentTop="true"
         android:gravity="center" />
 
-    <LinearLayout
-        android:id="@+id/layout_bottom_bar"
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bnv"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:focusable="true"
+        android:background="?android:attr/windowBackground"
+        android:elevation="8dp"
         android:gravity="center"
-        android:background="@color/colorPrimaryDarkWarm"
-        android:orientation="horizontal">
-
-        <android.support.design.widget.BottomNavigationView
-            android:id="@+id/bnv"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/windowBackground"
-            android:gravity="center"
-            app:itemIconTint="@drawable/bnv_color_selector"
-            app:itemTextColor="@drawable/bnv_color_selector"
-            app:menu="@menu/menu_bottom_navigation" />
-
-    </LinearLayout>
+        app:itemIconTint="@drawable/bnv_color_selector"
+        app:itemTextColor="@drawable/bnv_color_selector"
+        app:menu="@menu/menu_bottom_navigation" />
 
 </RelativeLayout>
