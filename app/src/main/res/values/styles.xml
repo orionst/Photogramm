@@ -2,7 +2,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -18,7 +17,6 @@
     </style>
 
     <style name="AppThemeWarm" parent="AppTheme.Base">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryWarm</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkWarm</item>
         <item name="colorAccent">@color/colorAccentWarm</item>
@@ -27,7 +25,6 @@
     </style>
 
     <style name="AppThemeCold" parent="AppTheme.Base">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryCold</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkCold</item>
         <item name="colorAccent">@color/colorAccentCold</item>
@@ -38,17 +35,5 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="FullscreenTheme" parent="AppThemeWarm">
-        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowBackground">@null</item>
-        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
-        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
-    </style>
-
-    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@color/black_overlay</item>
-    </style>
 
 </resources>

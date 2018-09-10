@@ -43,13 +43,13 @@ public class ContainerListsFragment extends Fragment {
         FragmentManager mFragmentManager = getChildFragmentManager();
 //        FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();
 
-        if (mFragmentManager.findFragmentByTag(TAG_DB) == null) {
+        if (savedInstanceState == null) {
             mFragmentManager.beginTransaction()
-                .add(R.id.containerFrame, DBPhotosFragment.newInstance(), TAG_DB)
-                .commit();
+                    .add(R.id.containerFrame, DBPhotosFragment.newInstance(), TAG_DB)
+                    .commit();
         }
 
-        BottomNavigationView bnv = layout.findViewById(R.id.bnv);
+        BottomNavigationView bnv = getActivity().findViewById(R.id.bnv);
         bnv.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_db:
@@ -58,8 +58,8 @@ public class ContainerListsFragment extends Fragment {
                         dbFragment = DBPhotosFragment.newInstance();
                     }
                     mFragmentManager.beginTransaction()
-                        .replace(R.id.containerFrame, dbFragment, TAG_DB)
-                        .commit();
+                            .replace(R.id.containerFrame, dbFragment, TAG_DB)
+                            .commit();
                     return true;
                 case R.id.action_internet:
                     Fragment onlineFragment = mFragmentManager.findFragmentByTag(TAG_INTERNET);
@@ -67,8 +67,8 @@ public class ContainerListsFragment extends Fragment {
                         onlineFragment = OnlinePhotosFragment.newInstance();
                     }
                     mFragmentManager.beginTransaction()
-                        .replace(R.id.containerFrame, onlineFragment, TAG_INTERNET)
-                        .commit();
+                            .replace(R.id.containerFrame, onlineFragment, TAG_INTERNET)
+                            .commit();
                     return true;
                 case R.id.action_common:
                     Fragment photoListFragment = mFragmentManager.findFragmentByTag(TAG_COMMON);
@@ -76,8 +76,8 @@ public class ContainerListsFragment extends Fragment {
                         photoListFragment = PhotoListFragment.newInstance();
                     }
                     mFragmentManager.beginTransaction()
-                        .replace(R.id.containerFrame, photoListFragment, TAG_COMMON)
-                        .commit();
+                            .replace(R.id.containerFrame, photoListFragment, TAG_COMMON)
+                            .commit();
                     return true;
             }
             return false;

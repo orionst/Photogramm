@@ -12,8 +12,6 @@
         android:layout_margin="@dimen/card_margin"
         android:elevation="@dimen/elevation"
         card_view:cardCornerRadius="@dimen/card_album_radius">
-        <!-- elevation - приподнятость элемента,
-        cardCornerRadius - скругленность углов-->
 
         <FrameLayout
             android:layout_width="match_parent"

@@ -25,6 +25,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".ThemeChoosingActivity" />
+        <activity
+            android:name=".ViewerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -36,11 +39,6 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity
-            android:name=".ViewerActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_viewer"
-            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

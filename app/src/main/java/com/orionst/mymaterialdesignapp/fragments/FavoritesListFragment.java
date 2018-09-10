@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -44,8 +43,6 @@ public class FavoritesListFragment extends Fragment implements PhotoListAdapter.
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_favorites_list, container, false);
         Log.i(TAG, "fragment Favorites List - onCreateView");
-
-        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
 
         RecyclerView recyclerView = layout.findViewById(R.id.photos_recyclerview);
         PhotoListAdapter adapter = new PhotoListAdapter(layout.getContext(), this);
