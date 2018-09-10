@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,16 +11,16 @@
         android:gravity="center"
         android:layout_above="@id/bnv" />
 
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/bnv"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="?android:attr/windowBackground"
-        android:elevation="8dp"
-        android:gravity="center"
-        app:itemIconTint="@drawable/bnv_color_selector"
-        app:itemTextColor="@drawable/bnv_color_selector"
-        app:menu="@menu/menu_bottom_navigation" />
+    <!--<android.support.design.widget.BottomNavigationView-->
+        <!--android:id="@+id/bnv"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:background="?android:attr/windowBackground"-->
+        <!--android:elevation="8dp"-->
+        <!--android:gravity="center"-->
+        <!--app:itemIconTint="@drawable/bnv_color_selector"-->
+        <!--app:itemTextColor="@drawable/bnv_color_selector"-->
+        <!--app:menu="@menu/menu_bottom_navigation" />-->
 
 </RelativeLayout>

@@ -63,7 +63,8 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
 
         Log.i(TAG, "fragment Photo List - onCreateView");
 
-        FloatingActionButton fab = layout.findViewById(R.id.fab);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab.show();
         fab.setOnClickListener(view -> dispatchTakePictureIntent());
 
         RecyclerView recyclerView = layout.findViewById(R.id.photos_recyclerview);

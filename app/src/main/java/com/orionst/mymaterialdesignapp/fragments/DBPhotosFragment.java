@@ -2,6 +2,7 @@ package com.orionst.mymaterialdesignapp.fragments;
 
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,7 +32,10 @@ public class DBPhotosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(TAG, "fragment DB Photos - onCreateView");
-        return inflater.inflate(R.layout.fragment_db_photos, container, false);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab.hide();
+        View layout = inflater.inflate(R.layout.fragment_db_photos, container, false);
+        return layout;
     }
 
 }

@@ -2,6 +2,7 @@ package com.orionst.mymaterialdesignapp.fragments;
 
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,7 +33,10 @@ public class OnlinePhotosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "fragment Online Photos - onCreateView");
-        return inflater.inflate(R.layout.fragment_online_photos, container, false);
+        View layout = inflater.inflate(R.layout.fragment_online_photos, container, false);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab.hide();
+        return layout;
     }
 
 }

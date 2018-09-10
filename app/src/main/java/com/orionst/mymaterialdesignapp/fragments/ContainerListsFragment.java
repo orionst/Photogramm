@@ -49,7 +49,7 @@ public class ContainerListsFragment extends Fragment {
                     .commit();
         }
 
-        BottomNavigationView bnv = layout.findViewById(R.id.bnv);
+        BottomNavigationView bnv = getActivity().findViewById(R.id.bnv);
         bnv.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_db:
