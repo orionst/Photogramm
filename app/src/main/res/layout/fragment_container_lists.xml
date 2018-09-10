@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_above="@id/bnv" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bnv"
