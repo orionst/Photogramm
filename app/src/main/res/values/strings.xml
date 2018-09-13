@@ -10,6 +10,8 @@
     <string name="alert_photo_added">Photo added to the collection</string>
     <string name="alert_photo_set_favorite">Photo added to the favorites</string>
     <string name="alert_photo_unset_favorite">Photo removed from the favorites</string>
+    <string name="alert_photo_deleted">Photo has been deleted</string>
+    <string name="alert_photo_delete_error">Something has wrong</string>
     <string name="menu_action_item_delete">Delete</string>
     <string name="title_standard_theme">Standard</string>
     <string name="tab_text_1">Main</string>
