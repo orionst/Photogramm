@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.database.model.Photo;
+import com.orionst.mymaterialdesignapp.presentation.presenter.IEntityPresenter;
 import com.orionst.mymaterialdesignapp.utils.CropSquareTransformation;
 import com.orionst.mymaterialdesignapp.utils.MyDiffCallback;
 
@@ -27,18 +27,16 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
     private LayoutInflater mInflater;
     private List<Photo> mPhotos = new ArrayList<>();
 
-    private EntitiesListener mPhotoListener;
+    private IEntityPresenter presenter;
 
-    public PhotoListAdapter(Context context, EntitiesListener entitiesListener) {
-        Log.d("Holder","new PhotoListAdapter");
+    public PhotoListAdapter(Context context, IEntityPresenter presenter) {
         this.mInflater = LayoutInflater.from(context);
-        this.mPhotoListener = entitiesListener;
+        this.presenter = presenter;
     }
 
     @NonNull
     @Override
     public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d("Holder","onCreateViewHolder "+parent);
         View itemView = mInflater.inflate(R.layout.item_photo_recyclerview, parent, false);
         return new PhotoViewHolder(itemView);
     }
@@ -63,7 +61,6 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
     }
 
     public void setPhotos(List<Photo> photos) {
-        Log.d("Holder","setPhotos count "+photos.size());
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MyDiffCallback(this.mPhotos, photos));
         diffResult.dispatchUpdatesTo(this);
         this.mPhotos.clear();
@@ -83,7 +80,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
 
             this.favoriteView.setOnClickListener(this::onClick);
             this.txtOptionDigit.setOnClickListener(this::onClick);
-            this.photoView.setOnClickListener(view -> mPhotoListener.onEntityOpen(getAdapterPosition()));
+            this.photoView.setOnClickListener(view -> presenter.openPhoto(getAdapterPosition()));
         }
 
         public void onClick(View view) {
@@ -92,7 +89,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
                 switch (view.getId()) {
 
                     case R.id.favorite:
-                        mPhotoListener.onEntityChange(position);
+                        presenter.changePhotoStateFavorite(position);
                         break;
 
                     case R.id.txtOptionDigit:
@@ -103,7 +100,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
 
                             switch (menuItem.getItemId()) {
                                 case R.id.action_item_delete:
-                                    mPhotoListener.onEntityDelete(position);
+                                    presenter.deletePhoto(position);
                                     break;
                                 default:
                                     break;
@@ -116,13 +113,5 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
             }
         }
     }
-
-
-    public interface EntitiesListener {
-        void onEntityChange(int item);
-        void onEntityDelete(int item);
-        void onEntityOpen(int item);
-    }
-
 
 }
