@@ -9,6 +9,8 @@
     <string name="alert_photo_added">Фото добавлено в коллекцию</string>
     <string name="alert_photo_set_favorite">Фото добавлено в избранное</string>
     <string name="alert_photo_unset_favorite">Фото удалено из избранного</string>
+    <string name="alert_photo_deleted">Фото удалено</string>
+    <string name="alert_photo_delete_error">Попытка удаления фото не удалась</string>
     <string name="menu_action_item_delete">Удалить</string>
     <string name="title_standard_theme">Стандартная тема</string>
     <string name="tab_text_1">Главная</string>

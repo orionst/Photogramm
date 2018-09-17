@@ -45,4 +45,6 @@ public class PhotoViewModel extends AndroidViewModel {
     public boolean delete(Photo photo) {
         return mRepository.delete(photo);
     }
+
+
 }

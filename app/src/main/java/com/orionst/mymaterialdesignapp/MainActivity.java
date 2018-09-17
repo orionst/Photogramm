@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 = new CustomFragmentPagerAdapter(getSupportFragmentManager(), this);
 
         // Set up the ViewPager with the sections adapter.
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.page_container);
+        ViewPager mViewPager = findViewById(R.id.page_container);
         mViewPager.setAdapter(customFragmentPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);

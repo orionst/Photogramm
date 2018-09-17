@@ -1,6 +1,7 @@
 package com.orionst.mymaterialdesignapp.fragments;
 
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -11,34 +12,40 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.ViewerActivity;
 import com.orionst.mymaterialdesignapp.database.model.Photo;
 import com.orionst.mymaterialdesignapp.fragments.adapters.PhotoListAdapter;
+import com.orionst.mymaterialdesignapp.presentation.presenter.PhotoPresenter;
+import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
 import com.orionst.mymaterialdesignapp.viewmodels.PhotoViewModel;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-public class PhotoListFragment extends Fragment implements PhotoListAdapter.EntitiesListener {
+public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView {
 
     private final int REQUEST_CODE_PHOTO = 1;
 
     private PhotoViewModel mPhotoViewModel;
     private Uri photoURI;
+    private PhotoListAdapter adapter;
 
-    private static final String TAG = "Holder";
+    @InjectPresenter
+    PhotoPresenter presenter;
 
     public PhotoListFragment() {
 
@@ -57,54 +64,32 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
         }
     }
 
+    @ProvidePresenter
+    public PhotoPresenter provideMainPresenter() {
+        mPhotoViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
+        presenter = new PhotoPresenter(mPhotoViewModel);
+        return presenter;
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_photo_list, container, false);
-
-        Log.i(TAG, "fragment Photo List - onCreateView");
 
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.show();
         fab.setOnClickListener(view -> dispatchTakePictureIntent());
 
         RecyclerView recyclerView = layout.findViewById(R.id.photos_recyclerview);
-        PhotoListAdapter adapter = new PhotoListAdapter(layout.getContext(), this);
+        adapter = new PhotoListAdapter(layout.getContext(), presenter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(layout.getContext(),
                 (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? 3 : 2));
 
-        mPhotoViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
-        mPhotoViewModel.getAllPhotos().observe(this, photos -> adapter.setPhotos(photos));
+        presenter.getPhotoList();
 
         return layout;
-    }
-
-    @Override
-    public void onEntityChange(int position) {
-        Photo item = mPhotoViewModel.getAllPhotos().getValue().get(position);
-        mPhotoViewModel.update(item);
-        Snackbar.make(this.getView(), (item.isFavorite()) ? getString(R.string.alert_photo_unset_favorite) : getString(R.string.alert_photo_set_favorite), Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
-    }
-
-    @Override
-    public void onEntityDelete(int position) {
-        if (mPhotoViewModel.delete(mPhotoViewModel.getAllPhotos().getValue().get(position))) {
-            Snackbar.make(this.getView(), "Photo has been deleted", Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
-        } else {
-            Snackbar.make(this.getView(), "Something has wrong", Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
-        }
-    }
-
-    @Override
-    public void onEntityOpen(int position) {
-        String photoUriString = mPhotoViewModel.getAllPhotos().getValue().get(position).getPhotoUri().toString();
-        Intent intent = new Intent(this.getActivity(), ViewerActivity.class);
-        intent.putExtra("photoUriString", photoUriString);
-        startActivity(intent);
     }
 
     @Override
@@ -156,4 +141,29 @@ public class PhotoListFragment extends Fragment implements PhotoListAdapter.Enti
         return image;
     }
 
+    @Override
+    public void getImages(LiveData<List<Photo>> allPhotos) {
+        allPhotos.observe(this, photos -> adapter.setPhotos(photos));
+    }
+
+    @Override
+    public void onFavoriteChanged(boolean favoriteState) {
+        Snackbar.make(this.getView(), (favoriteState) ? getString(R.string.alert_photo_unset_favorite) : getString(R.string.alert_photo_set_favorite), Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
+    }
+
+    @Override
+    public void onPhotoDelete(boolean actionSuccesseful) {
+        Snackbar.make(this.getView(),
+                    (actionSuccesseful ? getString(R.string.alert_photo_deleted) : getString(R.string.alert_photo_delete_error)),
+                    Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
+    }
+
+    @Override
+    public void onPhotoView(String uriString) {
+        Intent intent = new Intent(this.getActivity(), ViewerActivity.class);
+        intent.putExtra("photoUriString", uriString);
+        startActivity(intent);
+    }
 }

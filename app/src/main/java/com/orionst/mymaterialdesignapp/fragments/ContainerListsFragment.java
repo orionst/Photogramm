@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,6 @@ import android.view.ViewGroup;
 import com.orionst.mymaterialdesignapp.R;
 
 public class ContainerListsFragment extends Fragment {
-
-    private static final String TAG = "Holder";
 
     public static final String TAG_DB = "db";
     public static final String TAG_INTERNET = "internet";
@@ -37,8 +34,6 @@ public class ContainerListsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_container_lists, container, false);
-
-        Log.i(TAG, "fragment ContainerListsFragment - onCreateView");
 
         FragmentManager mFragmentManager = getChildFragmentManager();
 //        FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();
