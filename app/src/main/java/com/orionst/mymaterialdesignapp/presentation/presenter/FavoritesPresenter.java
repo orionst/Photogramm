@@ -6,18 +6,28 @@ import com.orionst.mymaterialdesignapp.database.model.Photo;
 import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
 import com.orionst.mymaterialdesignapp.viewmodels.PhotoViewModel;
 
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
+
 @InjectViewState
 public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IEntityPresenter {
 
     private PhotoViewModel mPhotoViewModel;
+    private Scheduler observeScheduler;
 
-    public FavoritesPresenter(PhotoViewModel viewModel) {
+    public FavoritesPresenter(PhotoViewModel viewModel, Scheduler observeScheduler) {
         this.mPhotoViewModel = viewModel;
+        this.observeScheduler = observeScheduler;
     }
 
     @Override
     public void getPhotoList() {
-        getViewState().getImages(mPhotoViewModel.getAllFavPhotos());
+        Observable.fromArray(mPhotoViewModel.getAllFavPhotos())
+                .subscribeOn(Schedulers.io())
+                .observeOn(observeScheduler)
+                .subscribe(listLiveData -> getViewState().getImages(listLiveData));
+        //getViewState().getImages(mPhotoViewModel.getAllFavPhotos());
     }
 
     @Override

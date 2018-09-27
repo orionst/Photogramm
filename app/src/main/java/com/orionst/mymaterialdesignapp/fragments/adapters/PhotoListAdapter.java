@@ -39,7 +39,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
     public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.item_photo_recyclerview, parent, false);
         return new PhotoViewHolder(itemView);
-    }
+}
 
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {

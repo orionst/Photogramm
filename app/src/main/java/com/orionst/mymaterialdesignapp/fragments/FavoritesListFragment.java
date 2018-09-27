@@ -26,6 +26,8 @@ import com.orionst.mymaterialdesignapp.viewmodels.PhotoViewModel;
 
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+
 public class FavoritesListFragment extends MvpAppCompatFragment implements PhotoView {
 
     private PhotoViewModel mPhotoViewModel;
@@ -45,7 +47,7 @@ public class FavoritesListFragment extends MvpAppCompatFragment implements Photo
     @ProvidePresenter
     public FavoritesPresenter provideMainPresenter() {
         mPhotoViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
-        presenter = new FavoritesPresenter(mPhotoViewModel);
+        presenter = new FavoritesPresenter(mPhotoViewModel, AndroidSchedulers.mainThread());
         return presenter;
     }
 
