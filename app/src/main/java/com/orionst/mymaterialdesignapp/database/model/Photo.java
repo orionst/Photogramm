@@ -17,6 +17,7 @@ public class Photo {
     @ColumnInfo(name = "uri")
     @TypeConverters({UriDBFieldConverter.class})
     private Uri photoUri;
+
     @NonNull
     @ColumnInfo(name = "favorite")
     private boolean favorite;
