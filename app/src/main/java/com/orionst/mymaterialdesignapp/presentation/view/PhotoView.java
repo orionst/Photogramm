@@ -13,7 +13,12 @@ import java.util.List;
 public interface PhotoView extends MvpView {
 
     void getImages(LiveData<List<Photo>> allPhotos);
+    void getImages(List<Photo> allPhotos);
     void onFavoriteChanged(boolean favoriteState);
     void onPhotoDelete(boolean actionSuccesseful);
     void onPhotoView(String uriString);
+    void onNewImageList();
+    void showError(String message);
+    void showNotification(String message);
+    void sendReloadListMessage();
 }

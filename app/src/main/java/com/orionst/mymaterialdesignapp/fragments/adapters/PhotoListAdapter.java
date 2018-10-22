@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.database.model.Photo;
-import com.orionst.mymaterialdesignapp.presentation.presenter.IEntityPresenter;
+import com.orionst.mymaterialdesignapp.presentation.presenter.IPresenter;
 import com.orionst.mymaterialdesignapp.utils.CropSquareTransformation;
 import com.orionst.mymaterialdesignapp.utils.MyDiffCallback;
 
@@ -27,9 +27,9 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
     private LayoutInflater mInflater;
     private List<Photo> mPhotos = new ArrayList<>();
 
-    private IEntityPresenter presenter;
+    private IPresenter presenter;
 
-    public PhotoListAdapter(Context context, IEntityPresenter presenter) {
+    public PhotoListAdapter(Context context, IPresenter presenter) {
         this.mInflater = LayoutInflater.from(context);
         this.presenter = presenter;
     }
@@ -89,7 +89,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
                 switch (view.getId()) {
 
                     case R.id.favorite:
-                        presenter.changePhotoStateFavorite(position);
+                        //presenter.changePhotoStateFavorite(position);
                         break;
 
                     case R.id.txtOptionDigit:

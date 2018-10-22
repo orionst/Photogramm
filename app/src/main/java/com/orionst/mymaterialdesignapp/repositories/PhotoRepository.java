@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 
-import com.orionst.mymaterialdesignapp.PhotogrammApplication;
+import com.orionst.mymaterialdesignapp.App;
 import com.orionst.mymaterialdesignapp.database.PhotoDatabase;
 import com.orionst.mymaterialdesignapp.database.dao.PhotoDao;
 import com.orionst.mymaterialdesignapp.database.model.Photo;
@@ -104,7 +104,7 @@ public class PhotoRepository {
         @Override
         protected Boolean doInBackground(final Photo... params) {
             //return deleteUriFile(params[0].getPhotoUri());    // не удаляет почему-то
-            String filePath = PhotogrammApplication.context().getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath()
+            String filePath = App.context().getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath()
                     + "/"
                     + params[0].getPhotoUri().getLastPathSegment();
             if (deletePhotoFile(filePath)) {
@@ -116,7 +116,7 @@ public class PhotoRepository {
         }
 
         private boolean deleteUriFile(Uri uri) {
-            if (PhotogrammApplication.context().getContentResolver().delete(uri, null, null) >=1) {
+            if (App.context().getContentResolver().delete(uri, null, null) >=1) {
                 return true;
             }
             return false;

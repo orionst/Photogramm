@@ -22,71 +22,66 @@ import android.view.View;
 
 import com.orionst.mymaterialdesignapp.fragments.PhotoListFragment;
 import com.orionst.mymaterialdesignapp.fragments.adapters.CustomFragmentPagerAdapter;
+import com.orionst.mymaterialdesignapp.presentation.view.MainView;
 import com.orionst.mymaterialdesignapp.utils.SharedPrefs;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnPageChange;
 
-    DrawerLayout drawer;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MainView {
+
+    @BindView(R.id.drawer_layout) DrawerLayout drawer;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.fab) FloatingActionButton fab;
+    @BindView(R.id.navigation_view) NavigationView navigationView;
+    @BindView(R.id.bnv) BottomNavigationView bnv;
+    @BindView(R.id.page_container) ViewPager mViewPager;
+    @BindView(R.id.tabs) TabLayout tabLayout;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        initUI();
+    }
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+    @Override
+    public void initUI() {
         setSupportActionBar(toolbar);
 
-        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        BottomNavigationView bnv = findViewById(R.id.bnv);
 
         CustomFragmentPagerAdapter customFragmentPagerAdapter
                 = new CustomFragmentPagerAdapter(getSupportFragmentManager(), this);
 
         // Set up the ViewPager with the sections adapter.
-        ViewPager mViewPager = findViewById(R.id.page_container);
         mViewPager.setAdapter(customFragmentPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+    }
 
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
+    @OnPageChange(value=R.id.page_container, callback = OnPageChange.Callback.PAGE_SELECTED)
+    void onPageSelected(int i) {
+        if (i == 0) {
+            bnv.setVisibility(View.VISIBLE);
+            if (bnv.getSelectedItemId() == R.id.action_common) {
+                fab.show();
+            } else {
+                fab.hide();
             }
-
-            @Override
-            public void onPageSelected(int i) {
-                if (i == 0) {
-                    bnv.setVisibility(View.VISIBLE);
-                    if (bnv.getSelectedItemId() == R.id.action_common) {
-                        fab.show();
-                    } else {
-                        fab.hide();
-                    }
-                } else {
-                    fab.hide();
-                    bnv.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
-
+        } else {
+            fab.hide();
+            bnv.setVisibility(View.GONE);
+        }
     }
 
     @Override

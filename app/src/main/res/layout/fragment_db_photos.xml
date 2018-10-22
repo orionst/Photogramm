@@ -5,10 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".fragments.DBPhotosFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/photos_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_db_fragment" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        tools:listitem="@layout/item_photo_recyclerview">
+
+    </android.support.v7.widget.RecyclerView>
 
 </FrameLayout>

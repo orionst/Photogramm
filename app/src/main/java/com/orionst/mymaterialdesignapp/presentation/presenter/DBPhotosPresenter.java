@@ -18,7 +18,7 @@ import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
-public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPresenter {
+public class DBPhotosPresenter extends MvpPresenter<PhotoView> implements IPresenter {
 
     private Scheduler scheduler;
     private List<Image> imageList = new ArrayList<>();
@@ -53,7 +53,7 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
         public void applyImageList() {
             imageList.clear();
             imageList.addAll(imageListNew);
-        }
+       }
 
         @Override
         public void onImageClick(int position) {
@@ -86,26 +86,20 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
                                 getPhotoList();
                                 getViewState().sendReloadListMessage();
                             },
-                            throwable -> getViewState().showError("Error changing"));
-        }
+                            throwable -> getViewState().showError(throwable.getMessage()));
 
+        }
     }
 
-    public FavoritesPresenter(Scheduler observeScheduler) {
-        this.scheduler = observeScheduler;
+
+    public DBPhotosPresenter(Scheduler scheduler) {
+        this.scheduler = scheduler;
 //        dbRepo = new RealmRepository();
     }
 
-    @Override
-    protected void onFirstViewAttach() {
-        super.onFirstViewAttach();
-        getPhotoList();
-    }
-
-    @Override
     public void getPhotoList() {
-        Log.d("TAG", "Fav.getAllImages()");
-        dbRepo.getFavoriteImages()
+        Log.d("TAG", "DBPresenter.getAllImages()");
+        dbRepo.getAllImages()
                 .observeOn(scheduler)
                 .subscribe(images -> {
                     this.imageListNew = images;
@@ -113,6 +107,12 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
                 }, throwable -> {
                     getViewState().showError(throwable.getMessage());
                 });
+    }
+
+    @Override
+    protected void onFirstViewAttach() {
+        super.onFirstViewAttach();
+        getPhotoList();
     }
 
     public ImageListPresenter getImageListPresenter() {
@@ -124,8 +124,8 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
     public void deletePhoto(int position) {
     }
 
-    @Override
     // TODO: not needed, to delete
+    @Override
     public void openPhoto(int position) {
     }
 

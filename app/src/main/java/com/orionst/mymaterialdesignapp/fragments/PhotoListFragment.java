@@ -102,7 +102,8 @@ public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_PHOTO && resultCode == Activity.RESULT_OK) {
-            mPhotoViewModel.insert(photoURI);
+            //mPhotoViewModel.insert(photoURI);
+            presenter.addImage(photoURI.toString());
             Snackbar.make(this.getView(), R.string.alert_photo_added, Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
         }
@@ -147,6 +148,11 @@ public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView
     }
 
     @Override
+    public void getImages(List<Photo> allPhotos) {
+
+    }
+
+    @Override
     public void onFavoriteChanged(boolean favoriteState) {
         Snackbar.make(this.getView(), (favoriteState) ? getString(R.string.alert_photo_unset_favorite) : getString(R.string.alert_photo_set_favorite), Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
@@ -165,5 +171,25 @@ public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView
         Intent intent = new Intent(this.getActivity(), ViewerActivity.class);
         intent.putExtra("photoUriString", uriString);
         startActivity(intent);
+    }
+
+    @Override
+    public void onNewImageList() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+
+    }
+
+    @Override
+    public void showNotification(String message) {
+
+    }
+
+    @Override
+    public void sendReloadListMessage() {
+
     }
 }

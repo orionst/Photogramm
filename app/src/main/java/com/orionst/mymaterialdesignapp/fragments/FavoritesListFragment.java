@@ -2,7 +2,6 @@ package com.orionst.mymaterialdesignapp.fragments;
 
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,22 +15,29 @@ import android.view.ViewGroup;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.orionst.mymaterialdesignapp.App;
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.ViewerActivity;
 import com.orionst.mymaterialdesignapp.database.model.Photo;
-import com.orionst.mymaterialdesignapp.fragments.adapters.PhotoListAdapter;
+import com.orionst.mymaterialdesignapp.fragments.adapters.ImageListAdapter;
+import com.orionst.mymaterialdesignapp.fragments.eventbus.ReloadImagesEvent;
 import com.orionst.mymaterialdesignapp.presentation.presenter.FavoritesPresenter;
 import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
-import com.orionst.mymaterialdesignapp.viewmodels.PhotoViewModel;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class FavoritesListFragment extends MvpAppCompatFragment implements PhotoView {
 
-    private PhotoViewModel mPhotoViewModel;
-    private PhotoListAdapter adapter;
+    private ImageListAdapter adapter;
+    @BindView(R.id.photos_recyclerview) RecyclerView imagesRecyclerView;
 
     @InjectPresenter
     FavoritesPresenter presenter;
@@ -46,8 +52,8 @@ public class FavoritesListFragment extends MvpAppCompatFragment implements Photo
 
     @ProvidePresenter
     public FavoritesPresenter provideMainPresenter() {
-        mPhotoViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
-        presenter = new FavoritesPresenter(mPhotoViewModel, AndroidSchedulers.mainThread());
+        presenter = new FavoritesPresenter(AndroidSchedulers.mainThread());
+        App.getAppComponent().inject(presenter);
         return presenter;
     }
 
@@ -59,22 +65,38 @@ public class FavoritesListFragment extends MvpAppCompatFragment implements Photo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_favorites_list, container, false);
+        ButterKnife.bind(this, layout);
 
-        RecyclerView recyclerView = layout.findViewById(R.id.photos_recyclerview);
-        adapter = new PhotoListAdapter(layout.getContext(), presenter);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(layout.getContext(),
+        adapter = new ImageListAdapter(presenter.getImageListPresenter(), layout.getContext());
+        imagesRecyclerView.setHasFixedSize(true);
+        imagesRecyclerView.setAdapter(adapter);
+        imagesRecyclerView.setLayoutManager(new GridLayoutManager(layout.getContext(),
                 (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? 3 : 2));
-
-        presenter.getPhotoList();
 
         return layout;
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    //TODO: to delete
+    @Override
     public void getImages(LiveData<List<Photo>> allPhotos) {
-        allPhotos.observe(this, photos -> adapter.setPhotos(photos));
+    }
+
+    //TODO: to delete
+    @Override
+    public void getImages(List<Photo> allPhotos) {
+
     }
 
     @Override
@@ -97,4 +119,32 @@ public class FavoritesListFragment extends MvpAppCompatFragment implements Photo
         intent.putExtra("photoUriString", uriString);
         startActivity(intent);
     }
+
+    @Override
+    public void onNewImageList() {
+        adapter.updateList();
+    }
+
+    @Override
+    public void showError(String message) {
+        Snackbar.make(this.getView(), message, Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
+    }
+
+    @Override
+    public void showNotification(String message) {
+        Snackbar.make(this.getView(), message, Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
+    }
+
+    @Override
+    public void sendReloadListMessage() {
+        EventBus.getDefault().post(new ReloadImagesEvent(true));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(ReloadImagesEvent event) {
+        presenter.onMessageEvent();
+    }
+
 }

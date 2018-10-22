@@ -36,7 +36,6 @@ public class ContainerListsFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_container_lists, container, false);
 
         FragmentManager mFragmentManager = getChildFragmentManager();
-//        FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();
 
         if (savedInstanceState == null) {
             mFragmentManager.beginTransaction()
@@ -77,9 +76,7 @@ public class ContainerListsFragment extends Fragment {
             }
             return false;
         });
-
         return layout;
-
     }
 
 }
