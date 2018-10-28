@@ -17,6 +17,8 @@ public class ContainerListsFragment extends Fragment {
     public static final String TAG_INTERNET = "internet";
     public static final String TAG_COMMON = "common";
 
+    public String currentTag = "";
+
     public ContainerListsFragment() {
 
     }
@@ -41,6 +43,7 @@ public class ContainerListsFragment extends Fragment {
             mFragmentManager.beginTransaction()
                     .add(R.id.containerFrame, DBPhotosFragment.newInstance(), TAG_DB)
                     .commit();
+            currentTag = TAG_DB;
         }
 
         BottomNavigationView bnv = getActivity().findViewById(R.id.bnv);

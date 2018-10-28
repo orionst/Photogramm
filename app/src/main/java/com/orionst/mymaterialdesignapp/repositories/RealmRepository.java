@@ -70,7 +70,7 @@ public class RealmRepository {
             List<Image> images = new ArrayList<>();
             if (!realmImages.isEmpty()) {
                 for (RealmImage realmImage : realmImages) {
-                    images.add(new Image(Uri.parse(realmImage.getUriString()), realmImage.isFavorite()));
+                    images.add(new Image(Uri.parse(realmImage.getUriString()), realmImage.isFavorite(), false));
                 }
             }
             emitter.onNext(images);
@@ -87,7 +87,7 @@ public class RealmRepository {
             List<RealmImage> realmImages = realm.where(RealmImage.class).equalTo("favorite", true).findAll();
             if (!realmImages.isEmpty()) {
                 for (RealmImage realmImage : realmImages) {
-                    images.add(new Image(Uri.parse(realmImage.getUriString()), realmImage.isFavorite()));
+                    images.add(new Image(Uri.parse(realmImage.getUriString()), realmImage.isFavorite(), false));
                 }
             }
             emitter.onNext(images);
@@ -95,4 +95,5 @@ public class RealmRepository {
             realm.close();
         });
     }
+
 }

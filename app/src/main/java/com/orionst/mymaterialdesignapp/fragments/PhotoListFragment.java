@@ -1,17 +1,20 @@
 package com.orionst.mymaterialdesignapp.fragments;
 
+import android.Manifest;
 import android.app.Activity;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,30 +25,34 @@ import android.view.ViewGroup;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.orionst.mymaterialdesignapp.App;
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.ViewerActivity;
-import com.orionst.mymaterialdesignapp.database.model.Photo;
-import com.orionst.mymaterialdesignapp.fragments.adapters.PhotoListAdapter;
+import com.orionst.mymaterialdesignapp.fragments.adapters.ImageListAdapter;
 import com.orionst.mymaterialdesignapp.presentation.presenter.PhotoPresenter;
 import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
-import com.orionst.mymaterialdesignapp.viewmodels.PhotoViewModel;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView {
 
     private final int REQUEST_CODE_PHOTO = 1;
+    private static final int PERMISSION_REQUEST_CODE = 10;
 
-    private PhotoViewModel mPhotoViewModel;
     private Uri photoURI;
-    private PhotoListAdapter adapter;
+    private String mCurrentPhotoPath;
+    private ImageListAdapter adapter;
 
-    @InjectPresenter
-    PhotoPresenter presenter;
+    @BindView(R.id.photos_recyclerview) RecyclerView imagesRecyclerView;
+
+    @InjectPresenter PhotoPresenter presenter;
 
     public PhotoListFragment() {
 
@@ -66,11 +73,10 @@ public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView
 
     @ProvidePresenter
     public PhotoPresenter provideMainPresenter() {
-        mPhotoViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
-        presenter = new PhotoPresenter(mPhotoViewModel);
+        presenter = new PhotoPresenter(AndroidSchedulers.mainThread());
+        App.getAppComponent().inject(presenter);
         return presenter;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,14 +86,13 @@ public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView
         fab.show();
         fab.setOnClickListener(view -> dispatchTakePictureIntent());
 
-        RecyclerView recyclerView = layout.findViewById(R.id.photos_recyclerview);
-        adapter = new PhotoListAdapter(layout.getContext(), presenter);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(layout.getContext(),
-                (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? 3 : 2));
+        ButterKnife.bind(this, layout);
 
-        presenter.getPhotoList();
+        adapter = new ImageListAdapter(presenter.getImageListPresenter(), layout.getContext());
+        imagesRecyclerView.setHasFixedSize(true);
+        imagesRecyclerView.setAdapter(adapter);
+        imagesRecyclerView.setLayoutManager(new GridLayoutManager(layout.getContext(),
+                (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? 3 : 2));
 
         return layout;
     }
@@ -102,14 +107,14 @@ public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_PHOTO && resultCode == Activity.RESULT_OK) {
-            //mPhotoViewModel.insert(photoURI);
+            //TODO addImage with mCurrentPhotoPath in param
             presenter.addImage(photoURI.toString());
             Snackbar.make(this.getView(), R.string.alert_photo_added, Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
         }
     }
 
-    private void dispatchTakePictureIntent() {
+    private void getNewPhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
             File photoFile = null;
@@ -129,6 +134,33 @@ public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView
         }
     }
 
+    private void dispatchTakePictureIntent() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                this.requestPermissions(
+                        new String[]{Manifest.permission.CAMERA},
+                        PERMISSION_REQUEST_CODE
+                );
+            } else {
+                getNewPhoto();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getNewPhoto();
+                }
+                return;
+            }
+        }
+    }
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -139,31 +171,8 @@ public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
+        mCurrentPhotoPath = image.getAbsolutePath();
         return image;
-    }
-
-    @Override
-    public void getImages(LiveData<List<Photo>> allPhotos) {
-        allPhotos.observe(this, photos -> adapter.setPhotos(photos));
-    }
-
-    @Override
-    public void getImages(List<Photo> allPhotos) {
-
-    }
-
-    @Override
-    public void onFavoriteChanged(boolean favoriteState) {
-        Snackbar.make(this.getView(), (favoriteState) ? getString(R.string.alert_photo_unset_favorite) : getString(R.string.alert_photo_set_favorite), Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
-    }
-
-    @Override
-    public void onPhotoDelete(boolean actionSuccesseful) {
-        Snackbar.make(this.getView(),
-                    (actionSuccesseful ? getString(R.string.alert_photo_deleted) : getString(R.string.alert_photo_delete_error)),
-                    Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
     }
 
     @Override
@@ -175,17 +184,13 @@ public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView
 
     @Override
     public void onNewImageList() {
-
-    }
-
-    @Override
-    public void showError(String message) {
-
+        adapter.updateList();
     }
 
     @Override
     public void showNotification(String message) {
-
+        Snackbar.make(this.getView(), message, Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.orionst.mymaterialdesignapp.presentation.presenter;
 
-import android.util.Log;
+import android.annotation.SuppressLint;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.orionst.mymaterialdesignapp.R;
+import com.orionst.mymaterialdesignapp.domain.AndroidResourceManager;
 import com.orionst.mymaterialdesignapp.domain.model.entity.Image;
 import com.orionst.mymaterialdesignapp.presentation.view.ImageCellView;
 import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
@@ -24,6 +26,7 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
     private List<Image> imageList = new ArrayList<>();
     private List<Image> imageListNew;
     @Inject RealmRepository dbRepo;
+    @Inject AndroidResourceManager resourceManager;
 
     private ImageListPresenter imageListPresenter = new ImageListPresenter();
 
@@ -61,6 +64,7 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
             getViewState().onPhotoView(photoUriString);
         }
 
+        @SuppressLint("CheckResult")
         @Override
         public void deleteImage(int position) {
             dbRepo.deleteImageFromDB(imageList.get(position))
@@ -68,12 +72,15 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
                     .observeOn(scheduler)
                     .subscribe(
                             () -> {
-                                getViewState().onPhotoDelete(true);
+                                getViewState().showNotification(resourceManager.getString(R.string.alert_photo_deleted));
                                 getPhotoList();
+                                getViewState().sendReloadListMessage();
                             },
-                            throwable -> getViewState().showError(throwable.getMessage()));
+                            throwable ->
+                                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_delete_error)));
         }
 
+        @SuppressLint("CheckResult")
         @Override
         public void onClickFavorite(int pos) {
             Image item = imageList.get(pos);
@@ -82,18 +89,18 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
                     .observeOn(scheduler)
                     .subscribe(
                             () -> {
-                                getViewState().onFavoriteChanged(item.isFavorite());
+                                getViewState().showNotification(resourceManager.getString(item.isFavorite() ? R.string.alert_photo_favorite_unset : R.string.alert_photo_favorite_set));
                                 getPhotoList();
                                 getViewState().sendReloadListMessage();
                             },
-                            throwable -> getViewState().showError("Error changing"));
+                            throwable ->
+                                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_favorite_change_error)));
         }
 
     }
 
     public FavoritesPresenter(Scheduler observeScheduler) {
         this.scheduler = observeScheduler;
-//        dbRepo = new RealmRepository();
     }
 
     @Override
@@ -102,31 +109,21 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
         getPhotoList();
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void getPhotoList() {
-        Log.d("TAG", "Fav.getAllImages()");
         dbRepo.getFavoriteImages()
                 .observeOn(scheduler)
                 .subscribe(images -> {
                     this.imageListNew = images;
                     getViewState().onNewImageList();
                 }, throwable -> {
-                    getViewState().showError(throwable.getMessage());
+                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_get_list_error));
                 });
     }
 
     public ImageListPresenter getImageListPresenter() {
         return imageListPresenter;
-    }
-
-    @Override
-    // TODO: not needed, to delete
-    public void deletePhoto(int position) {
-    }
-
-    @Override
-    // TODO: not needed, to delete
-    public void openPhoto(int position) {
     }
 
     @Override

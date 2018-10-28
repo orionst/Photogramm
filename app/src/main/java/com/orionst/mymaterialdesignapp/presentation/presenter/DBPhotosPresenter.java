@@ -1,9 +1,9 @@
 package com.orionst.mymaterialdesignapp.presentation.presenter;
 
-import android.util.Log;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.orionst.mymaterialdesignapp.R;
+import com.orionst.mymaterialdesignapp.domain.AndroidResourceManager;
 import com.orionst.mymaterialdesignapp.domain.model.entity.Image;
 import com.orionst.mymaterialdesignapp.presentation.view.ImageCellView;
 import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
@@ -20,10 +20,12 @@ import io.reactivex.schedulers.Schedulers;
 @InjectViewState
 public class DBPhotosPresenter extends MvpPresenter<PhotoView> implements IPresenter {
 
-    private Scheduler scheduler;
+    private Scheduler observeScheduler;
+    @Inject RealmRepository dbRepo;
+    @Inject AndroidResourceManager resourceManager;
+
     private List<Image> imageList = new ArrayList<>();
     private List<Image> imageListNew;
-    @Inject RealmRepository dbRepo;
 
     private ImageListPresenter imageListPresenter = new ImageListPresenter();
 
@@ -53,7 +55,7 @@ public class DBPhotosPresenter extends MvpPresenter<PhotoView> implements IPrese
         public void applyImageList() {
             imageList.clear();
             imageList.addAll(imageListNew);
-       }
+        }
 
         @Override
         public void onImageClick(int position) {
@@ -65,13 +67,15 @@ public class DBPhotosPresenter extends MvpPresenter<PhotoView> implements IPrese
         public void deleteImage(int position) {
             dbRepo.deleteImageFromDB(imageList.get(position))
                     .subscribeOn(Schedulers.io())
-                    .observeOn(scheduler)
+                    .observeOn(observeScheduler)
                     .subscribe(
                             () -> {
-                                getViewState().onPhotoDelete(true);
+                                getViewState().showNotification(resourceManager.getString(R.string.alert_photo_deleted));
                                 getPhotoList();
+                                getViewState().sendReloadListMessage();
                             },
-                            throwable -> getViewState().showError(throwable.getMessage()));
+                            throwable ->
+                                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_delete_error)));
         }
 
         @Override
@@ -79,34 +83,22 @@ public class DBPhotosPresenter extends MvpPresenter<PhotoView> implements IPrese
             Image item = imageList.get(pos);
             dbRepo.updateImageInDB(item)
                     .subscribeOn(Schedulers.io())
-                    .observeOn(scheduler)
+                    .observeOn(observeScheduler)
                     .subscribe(
                             () -> {
-                                getViewState().onFavoriteChanged(item.isFavorite());
+                                getViewState().showNotification(resourceManager.getString(item.isFavorite() ? R.string.alert_photo_favorite_unset : R.string.alert_photo_favorite_set));
                                 getPhotoList();
                                 getViewState().sendReloadListMessage();
                             },
-                            throwable -> getViewState().showError(throwable.getMessage()));
+                            throwable ->
+                                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_favorite_change_error)));
 
         }
     }
 
 
     public DBPhotosPresenter(Scheduler scheduler) {
-        this.scheduler = scheduler;
-//        dbRepo = new RealmRepository();
-    }
-
-    public void getPhotoList() {
-        Log.d("TAG", "DBPresenter.getAllImages()");
-        dbRepo.getAllImages()
-                .observeOn(scheduler)
-                .subscribe(images -> {
-                    this.imageListNew = images;
-                    getViewState().onNewImageList();
-                }, throwable -> {
-                    getViewState().showError(throwable.getMessage());
-                });
+        this.observeScheduler = scheduler;
     }
 
     @Override
@@ -119,14 +111,15 @@ public class DBPhotosPresenter extends MvpPresenter<PhotoView> implements IPrese
         return imageListPresenter;
     }
 
-    @Override
-    // TODO: not needed, to delete
-    public void deletePhoto(int position) {
-    }
-
-    // TODO: not needed, to delete
-    @Override
-    public void openPhoto(int position) {
+    public void getPhotoList() {
+        dbRepo.getAllImages()
+                .observeOn(observeScheduler)
+                .subscribe(images -> {
+                    this.imageListNew = images;
+                    getViewState().onNewImageList();
+                }, throwable -> {
+                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_get_list_error));
+                });
     }
 
     @Override

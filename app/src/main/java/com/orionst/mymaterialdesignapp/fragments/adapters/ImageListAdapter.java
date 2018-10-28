@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.presentation.presenter.IImageListPresenter;
 import com.orionst.mymaterialdesignapp.presentation.view.ImageCellView;
 import com.orionst.mymaterialdesignapp.utils.CropSquareTransformation;
+import com.orionst.mymaterialdesignapp.utils.GlideApp;
 import com.orionst.mymaterialdesignapp.utils.MyDiffImagesCallback;
 
 import butterknife.BindView;
@@ -51,9 +53,12 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
 
         @Override
         public void setImage(Uri imageUri) {
-            Glide.with(mInflater.getContext())
+            GlideApp.with(mInflater.getContext())
                     .load(imageUri)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(bitmapTransform(new CropSquareTransformation()))
+                    //.placeholder(R.drawable.image_placeholder)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(photoView);
         }
 

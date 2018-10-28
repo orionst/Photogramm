@@ -4,8 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 
+import com.facebook.stetho.Stetho;
 import com.orionst.mymaterialdesignapp.di.AppComponent;
 import com.orionst.mymaterialdesignapp.di.DaggerAppComponent;
+import com.orionst.mymaterialdesignapp.di.modules.AppModule;
 import com.orionst.mymaterialdesignapp.di.modules.DBModule;
 
 import java.io.File;
@@ -28,7 +30,10 @@ public class App extends Application {
 
         appComponent = DaggerAppComponent.builder()
                 .dBModule(new DBModule())
+                .appModule(new AppModule(this))
                 .build();
+
+        Stetho.initializeWithDefaults(this);
     }
 
     public static AppComponent getAppComponent() {

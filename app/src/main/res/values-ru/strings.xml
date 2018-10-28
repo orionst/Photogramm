@@ -7,8 +7,8 @@
     <string name="menu_item_photoes">Фотографии</string>
     <string name="nav_bar_title">Photogramm</string>
     <string name="alert_photo_added">Фото добавлено в коллекцию</string>
-    <string name="alert_photo_set_favorite">Фото добавлено в избранное</string>
-    <string name="alert_photo_unset_favorite">Фото удалено из избранного</string>
+    <string name="alert_photo_favorite_set">Фото добавлено в избранное</string>
+    <string name="alert_photo_favorite_unset">Фото удалено из избранного</string>
     <string name="alert_photo_deleted">Фото удалено</string>
     <string name="alert_photo_delete_error">Попытка удаления фото не удалась</string>
     <string name="menu_action_item_delete">Удалить</string>
@@ -19,5 +19,9 @@
     <string name="item_menu_database">Из БД</string>
     <string name="item_menu_internet">Из Интернета</string>
     <string name="item_menu_common">Общие</string>
+    <string name="alert_photo_get_list_error">Ошибка получения списка фотографий из БД</string>
+    <string name="alert_photo_favorite_change_error">Ошибка изменения статуса избранного</string>
+    <string name="alert_photo_add_error">Ошибка при добавлении фото</string>
+    <string name="alert_photo_online_get_error">Ошибка при получении списка фото из интернета</string>
 
 </resources>
