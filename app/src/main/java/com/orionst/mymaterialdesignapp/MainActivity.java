@@ -20,7 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.orionst.mymaterialdesignapp.fragments.PhotoListFragment;
+import com.orionst.mymaterialdesignapp.fragments.CommonListFragment;
 import com.orionst.mymaterialdesignapp.fragments.adapters.CustomFragmentPagerAdapter;
 import com.orionst.mymaterialdesignapp.presentation.view.MainView;
 import com.orionst.mymaterialdesignapp.utils.SharedPrefs;
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.menu_item_main:
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container, PhotoListFragment.newInstance())
+                        .replace(R.id.fragment_container, CommonListFragment.newInstance())
                         .commit();
                 break;
             case R.id.menu_item_change_theme:

@@ -2,8 +2,7 @@ package com.orionst.mymaterialdesignapp.presentation.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.orionst.mymaterialdesignapp.R;
-import com.orionst.mymaterialdesignapp.domain.AndroidResourceManager;
+import com.orionst.mymaterialdesignapp.domain.ResourceManager;
 import com.orionst.mymaterialdesignapp.domain.model.entity.Image;
 import com.orionst.mymaterialdesignapp.presentation.view.ImageCellView;
 import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
@@ -22,7 +22,9 @@ public class DBPhotosPresenter extends MvpPresenter<PhotoView> implements IPrese
 
     private Scheduler observeScheduler;
     @Inject RealmRepository dbRepo;
-    @Inject AndroidResourceManager resourceManager;
+    @Inject
+    @Named("DB")
+    ResourceManager resourceManager;
 
     private List<Image> imageList = new ArrayList<>();
     private List<Image> imageListNew;
@@ -70,12 +72,12 @@ public class DBPhotosPresenter extends MvpPresenter<PhotoView> implements IPrese
                     .observeOn(observeScheduler)
                     .subscribe(
                             () -> {
-                                getViewState().showNotification(resourceManager.getString(R.string.alert_photo_deleted));
+                                getViewState().showNotification(resourceManager.getStringNotificationOnDeleteImage());
                                 getPhotoList();
                                 getViewState().sendReloadListMessage();
                             },
                             throwable ->
-                                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_delete_error)));
+                                    getViewState().showNotification(resourceManager.getStringNotificationOnDeleteImageError()));
         }
 
         @Override
@@ -86,12 +88,12 @@ public class DBPhotosPresenter extends MvpPresenter<PhotoView> implements IPrese
                     .observeOn(observeScheduler)
                     .subscribe(
                             () -> {
-                                getViewState().showNotification(resourceManager.getString(item.isFavorite() ? R.string.alert_photo_favorite_unset : R.string.alert_photo_favorite_set));
+                                getViewState().showNotification(resourceManager.getStringNotificationOnChangeFavorite(item.isFavorite()));
                                 getPhotoList();
                                 getViewState().sendReloadListMessage();
                             },
                             throwable ->
-                                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_favorite_change_error)));
+                                    getViewState().showNotification(resourceManager.getStringNotificationOnErrorChangeFavorite()));
 
         }
     }
@@ -118,7 +120,7 @@ public class DBPhotosPresenter extends MvpPresenter<PhotoView> implements IPrese
                     this.imageListNew = images;
                     getViewState().onNewImageList();
                 }, throwable -> {
-                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_get_list_error));
+                    getViewState().showNotification(resourceManager.getStringNotificationOnErrorGetPhotoList());
                 });
     }
 

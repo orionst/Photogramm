@@ -2,9 +2,6 @@ package com.orionst.mymaterialdesignapp.di.modules;
 
 import android.content.Context;
 
-import com.orionst.mymaterialdesignapp.domain.AndroidResourceManager;
-import com.orionst.mymaterialdesignapp.domain.ResourceManager;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -24,10 +21,10 @@ public class AppModule {
         return appContext;
     }
 
-    @Singleton
-    @Provides
-    ResourceManager provideResourceManager(AndroidResourceManager resourceManager) {
-        return resourceManager;
-    }
+//    @Singleton
+//    @Provides
+//    ResourceManager provideResourceManager(ResourceManager resourceManager) {
+//        return resourceManager;
+//    }
 
 }

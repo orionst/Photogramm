@@ -10,6 +10,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -29,6 +30,20 @@ public class RealmRepository {
                 realm.executeTransaction(innerRealm -> {
                     realmImage.setFavorite(favorite);
                 });
+            }
+            realm.close();
+        });
+    }
+
+    public Single<Image> getImageFromDB(String uriString) {
+
+        return Single.create(emitter -> {
+            Realm realm = Realm.getDefaultInstance();
+            RealmImage realmImage = realm.where(RealmImage.class).equalTo("uriString", uriString).findFirst();
+            if (realmImage != null) {
+                emitter.onSuccess(new Image(Uri.parse(realmImage.getUriString()), realmImage.isFavorite(), false));
+            } else {
+                emitter.onError(new RuntimeException());
             }
             realm.close();
         });

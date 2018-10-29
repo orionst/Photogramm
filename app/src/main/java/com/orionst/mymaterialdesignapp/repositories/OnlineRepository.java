@@ -9,15 +9,12 @@ import com.orionst.mymaterialdesignapp.domain.model.entity.netstore.NetImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
 public class OnlineRepository {
 
     private ApiService api;
-    @Inject RealmRepository dbRepo;
 
     public OnlineRepository(ApiService api) {
         this.api = api;

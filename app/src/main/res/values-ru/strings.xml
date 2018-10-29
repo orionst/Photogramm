@@ -23,5 +23,6 @@
     <string name="alert_photo_favorite_change_error">Ошибка изменения статуса избранного</string>
     <string name="alert_photo_add_error">Ошибка при добавлении фото</string>
     <string name="alert_photo_online_get_error">Ошибка при получении списка фото из интернета</string>
+    <string name="alert_photo_favorite_set_error">Фото из интернета не может быть добавлено в Избранное</string>
 
 </resources>

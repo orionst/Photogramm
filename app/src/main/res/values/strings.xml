@@ -12,6 +12,7 @@
     <string name="alert_photo_add_error">Unexpected error while photo adding</string>
 
     <string name="alert_photo_favorite_set">Photo added to the favorites</string>
+    <string name="alert_photo_favorite_set_error">Photo from online repository can\'t be marked</string>
     <string name="alert_photo_favorite_unset">Photo removed from the favorites</string>
     <string name="alert_photo_favorite_change_error">Error while changing favorite state</string>
 

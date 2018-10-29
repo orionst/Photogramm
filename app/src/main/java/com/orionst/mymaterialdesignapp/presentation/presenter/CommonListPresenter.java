@@ -2,8 +2,7 @@ package com.orionst.mymaterialdesignapp.presentation.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.orionst.mymaterialdesignapp.R;
-import com.orionst.mymaterialdesignapp.domain.AndroidResourceManager;
+import com.orionst.mymaterialdesignapp.domain.ResourceManager;
 import com.orionst.mymaterialdesignapp.domain.model.entity.Image;
 import com.orionst.mymaterialdesignapp.presentation.view.ImageCellView;
 import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
@@ -15,16 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
-public class PhotoPresenter extends MvpPresenter<PhotoView> implements IPresenter {
+public class CommonListPresenter extends MvpPresenter<PhotoView> implements IPresenter {
 
     private Scheduler observeScheduler;
-    @Inject AndroidResourceManager resourceManager;
+    @Inject
+    @Named("Common")
+    ResourceManager resourceManager;
     @Inject RealmRepository dbRepo;
     @Inject OnlineRepository onlineRepo;
 
@@ -80,12 +81,12 @@ public class PhotoPresenter extends MvpPresenter<PhotoView> implements IPresente
                         .observeOn(observeScheduler)
                         .subscribe(
                                 () -> {
-                                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_deleted));
+                                    getViewState().showNotification(resourceManager.getStringNotificationOnDeleteImage());
                                     getPhotoList();
                                     getViewState().sendReloadListMessage();
                                 },
                                 throwable ->
-                                        getViewState().showNotification(resourceManager.getString(R.string.alert_photo_delete_error)));
+                                        getViewState().showNotification(resourceManager.getStringNotificationOnDeleteImageError()));
             }
         }
 
@@ -100,18 +101,18 @@ public class PhotoPresenter extends MvpPresenter<PhotoView> implements IPresente
                         .observeOn(observeScheduler)
                         .subscribe(
                                 () -> {
-                                    getViewState().showNotification(resourceManager.getString(item.isFavorite() ? R.string.alert_photo_favorite_unset : R.string.alert_photo_favorite_set));
+                                    getViewState().showNotification(resourceManager.getStringNotificationOnChangeFavorite(item.isFavorite()));
                                     getPhotoList();
                                     getViewState().sendReloadListMessage();
                                 },
                                 throwable ->
-                                        getViewState().showNotification(resourceManager.getString(R.string.alert_photo_favorite_change_error)));
+                                        getViewState().showNotification(resourceManager.getStringNotificationOnErrorChangeFavorite()));
 
             }
         }
     }
 
-    public PhotoPresenter(Scheduler observeScheduler) {
+    public CommonListPresenter(Scheduler observeScheduler) {
         this.observeScheduler = observeScheduler;
     }
 
@@ -135,7 +136,7 @@ public class PhotoPresenter extends MvpPresenter<PhotoView> implements IPresente
                     this.imageListNew.addAll(images);
                     getViewState().onNewImageList();
         }, throwable -> {
-            getViewState().showNotification(resourceManager.getString(R.string.alert_photo_get_list_error));
+            getViewState().showNotification(resourceManager.getStringNotificationOnErrorGetPhotoList());
         });
 
     }
@@ -148,12 +149,19 @@ public class PhotoPresenter extends MvpPresenter<PhotoView> implements IPresente
     public void addImage(String uriString) {
         dbRepo.saveImageToDB(uriString, false)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(observeScheduler)
                 .subscribe(() -> {
-                            getViewState().onNewImageList();
+//                        dbRepo.getImageFromDB(uriString)
+//                                .subscribeOn(Schedulers.io())
+//                                .observeOn(observeScheduler)
+//                                .subscribe(image -> {
+//                                    imageListNew.add(0,image);
+//                                    getViewState().onNewImageList();
+//                                });
+                    getPhotoList();
                         },
                         throwable -> {
-                            getViewState().showNotification(resourceManager.getString(R.string.alert_photo_add_error));
+                            getViewState().showNotification(resourceManager.getStringNotificationOnNewImageError());
                         }
                 );
     }

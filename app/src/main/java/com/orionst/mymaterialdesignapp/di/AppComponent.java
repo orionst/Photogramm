@@ -3,10 +3,10 @@ package com.orionst.mymaterialdesignapp.di;
 import com.orionst.mymaterialdesignapp.di.modules.DBModule;
 import com.orionst.mymaterialdesignapp.di.modules.OnlineModule;
 import com.orionst.mymaterialdesignapp.di.modules.ResourceModule;
+import com.orionst.mymaterialdesignapp.presentation.presenter.CommonListPresenter;
 import com.orionst.mymaterialdesignapp.presentation.presenter.DBPhotosPresenter;
 import com.orionst.mymaterialdesignapp.presentation.presenter.FavoritesPresenter;
 import com.orionst.mymaterialdesignapp.presentation.presenter.OnlinePhotosPresenter;
-import com.orionst.mymaterialdesignapp.presentation.presenter.PhotoPresenter;
 
 import javax.inject.Singleton;
 
@@ -19,6 +19,6 @@ public interface AppComponent {
     void inject(DBPhotosPresenter presenter);
     void inject(FavoritesPresenter presenter);
     void inject(OnlinePhotosPresenter presenter);
-    void inject(PhotoPresenter presenter);
+    void inject(CommonListPresenter presenter);
 
 }

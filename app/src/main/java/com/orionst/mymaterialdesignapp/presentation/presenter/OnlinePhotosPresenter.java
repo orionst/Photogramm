@@ -2,8 +2,7 @@ package com.orionst.mymaterialdesignapp.presentation.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.orionst.mymaterialdesignapp.R;
-import com.orionst.mymaterialdesignapp.domain.AndroidResourceManager;
+import com.orionst.mymaterialdesignapp.domain.ResourceManager;
 import com.orionst.mymaterialdesignapp.domain.model.entity.Image;
 import com.orionst.mymaterialdesignapp.presentation.view.ImageCellView;
 import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.reactivex.Scheduler;
 
@@ -21,7 +21,9 @@ import io.reactivex.Scheduler;
 public class OnlinePhotosPresenter extends MvpPresenter<PhotoView> implements IPresenter {
 
     @Inject OnlineRepository repository;
-    @Inject AndroidResourceManager resourceManager;
+    @Inject
+    @Named("Online")
+    ResourceManager resourceManager;
     private Scheduler scheduler;
 
     private List<Image> imageList = new ArrayList<>();
@@ -65,7 +67,7 @@ public class OnlinePhotosPresenter extends MvpPresenter<PhotoView> implements IP
 
         @Override
         public void onClickFavorite(int pos) {
-            getViewState().showNotification("Photo from online repository can't be marked");
+            getViewState().showNotification(resourceManager.getStringNotificationOnErrorChangeFavorite());
         }
 
         @Override
@@ -95,7 +97,7 @@ public class OnlinePhotosPresenter extends MvpPresenter<PhotoView> implements IP
                             this.imageListNew = images;
                             getViewState().onNewImageList();
                         },
-                        throwable -> getViewState().showNotification(resourceManager.getString(R.string.alert_photo_online_get_error)));
+                        throwable -> getViewState().showNotification(resourceManager.getStringNotificationOnErrorGetPhotoList()));
     }
 
     @Override

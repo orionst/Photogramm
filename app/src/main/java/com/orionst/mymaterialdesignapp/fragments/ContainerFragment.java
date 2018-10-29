@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.orionst.mymaterialdesignapp.R;
 
-public class ContainerListsFragment extends Fragment {
+public class ContainerFragment extends Fragment {
 
     public static final String TAG_DB = "db";
     public static final String TAG_INTERNET = "internet";
@@ -19,12 +19,12 @@ public class ContainerListsFragment extends Fragment {
 
     public String currentTag = "";
 
-    public ContainerListsFragment() {
+    public ContainerFragment() {
 
     }
 
-    public static ContainerListsFragment newInstance() {
-        ContainerListsFragment fragment = new ContainerListsFragment();
+    public static ContainerFragment newInstance() {
+        ContainerFragment fragment = new ContainerFragment();
         return fragment;
     }
 
@@ -70,7 +70,7 @@ public class ContainerListsFragment extends Fragment {
                 case R.id.action_common:
                     Fragment photoListFragment = mFragmentManager.findFragmentByTag(TAG_COMMON);
                     if (photoListFragment == null) {
-                        photoListFragment = PhotoListFragment.newInstance();
+                        photoListFragment = CommonListFragment.newInstance();
                     }
                     mFragmentManager.beginTransaction()
                             .replace(R.id.containerFrame, photoListFragment, TAG_COMMON)

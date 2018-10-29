@@ -5,7 +5,7 @@ import android.annotation.SuppressLint;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.orionst.mymaterialdesignapp.R;
-import com.orionst.mymaterialdesignapp.domain.AndroidResourceManager;
+import com.orionst.mymaterialdesignapp.domain.ResourceManager;
 import com.orionst.mymaterialdesignapp.domain.model.entity.Image;
 import com.orionst.mymaterialdesignapp.presentation.view.ImageCellView;
 import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
@@ -26,7 +27,8 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
     private List<Image> imageList = new ArrayList<>();
     private List<Image> imageListNew;
     @Inject RealmRepository dbRepo;
-    @Inject AndroidResourceManager resourceManager;
+    @Inject
+    @Named("DB") ResourceManager resourceManager;
 
     private ImageListPresenter imageListPresenter = new ImageListPresenter();
 

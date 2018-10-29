@@ -29,7 +29,7 @@ import com.orionst.mymaterialdesignapp.App;
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.ViewerActivity;
 import com.orionst.mymaterialdesignapp.fragments.adapters.ImageListAdapter;
-import com.orionst.mymaterialdesignapp.presentation.presenter.PhotoPresenter;
+import com.orionst.mymaterialdesignapp.presentation.presenter.CommonListPresenter;
 import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
 
 import java.io.File;
@@ -41,7 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView {
+public class CommonListFragment extends MvpAppCompatFragment implements PhotoView {
 
     private final int REQUEST_CODE_PHOTO = 1;
     private static final int PERMISSION_REQUEST_CODE = 10;
@@ -52,14 +52,14 @@ public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView
 
     @BindView(R.id.photos_recyclerview) RecyclerView imagesRecyclerView;
 
-    @InjectPresenter PhotoPresenter presenter;
+    @InjectPresenter CommonListPresenter presenter;
 
-    public PhotoListFragment() {
+    public CommonListFragment() {
 
     }
 
-    public static PhotoListFragment newInstance() {
-        PhotoListFragment fragment = new PhotoListFragment();
+    public static CommonListFragment newInstance() {
+        CommonListFragment fragment = new CommonListFragment();
         return fragment;
     }
 
@@ -72,8 +72,8 @@ public class PhotoListFragment extends MvpAppCompatFragment implements PhotoView
     }
 
     @ProvidePresenter
-    public PhotoPresenter provideMainPresenter() {
-        presenter = new PhotoPresenter(AndroidSchedulers.mainThread());
+    public CommonListPresenter provideMainPresenter() {
+        presenter = new CommonListPresenter(AndroidSchedulers.mainThread());
         App.getAppComponent().inject(presenter);
         return presenter;
     }
