@@ -7,11 +7,22 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="menu_item_photoes">Photos</string>
     <string name="nav_bar_title">Photogramm</string>
+
     <string name="alert_photo_added">Photo added to the collection</string>
-    <string name="alert_photo_set_favorite">Photo added to the favorites</string>
-    <string name="alert_photo_unset_favorite">Photo removed from the favorites</string>
+    <string name="alert_photo_add_error">Unexpected error while photo adding</string>
+
+    <string name="alert_photo_favorite_set">Photo added to the favorites</string>
+    <string name="alert_photo_favorite_set_error">Photo from online repository can\'t be marked</string>
+    <string name="alert_photo_favorite_unset">Photo removed from the favorites</string>
+    <string name="alert_photo_favorite_change_error">Error while changing favorite state</string>
+
     <string name="alert_photo_deleted">Photo has been deleted</string>
     <string name="alert_photo_delete_error">Something has wrong</string>
+
+    <string name="alert_photo_get_list_error">Unable to get photos</string>
+
+    <string name="alert_photo_online_get_error">Unable to get remote photos</string>
+
     <string name="menu_action_item_delete">Delete</string>
     <string name="title_standard_theme">Standard</string>
     <string name="tab_text_1">Main</string>
@@ -20,8 +31,5 @@
     <string name="item_menu_database">Database</string>
     <string name="item_menu_internet">Internet</string>
     <string name="item_menu_common">Common</string>
-
-    <string name="hello_db_fragment">Hello DB photos fragment</string>
-    <string name="hello_online_fragment">Hello Online photos fragment</string>
 
 </resources>

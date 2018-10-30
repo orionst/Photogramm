@@ -2,16 +2,16 @@ package com.orionst.mymaterialdesignapp.utils;
 
 import android.support.v7.util.DiffUtil;
 
-import com.orionst.mymaterialdesignapp.database.model.Photo;
+import com.orionst.mymaterialdesignapp.domain.model.entity.Image;
 
 import java.util.List;
 
-public class MyDiffCallback extends DiffUtil.Callback{
+public class MyDiffImagesCallback extends DiffUtil.Callback{
 
-    private List<Photo> oldPhotos;
-    private List<Photo> newPhotos;
+    private List<Image> oldPhotos;
+    private List<Image> newPhotos;
 
-    public MyDiffCallback(List<Photo> oldPhotos, List<Photo> newPhotos) {
+    public MyDiffImagesCallback(List<Image> oldPhotos, List<Image> newPhotos) {
         this.oldPhotos = oldPhotos;
         this.newPhotos = newPhotos;
     }

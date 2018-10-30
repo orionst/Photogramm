@@ -11,18 +11,20 @@ import android.view.ViewGroup;
 
 import com.orionst.mymaterialdesignapp.R;
 
-public class ContainerListsFragment extends Fragment {
+public class ContainerFragment extends Fragment {
 
     public static final String TAG_DB = "db";
     public static final String TAG_INTERNET = "internet";
     public static final String TAG_COMMON = "common";
 
-    public ContainerListsFragment() {
+    public String currentTag = "";
+
+    public ContainerFragment() {
 
     }
 
-    public static ContainerListsFragment newInstance() {
-        ContainerListsFragment fragment = new ContainerListsFragment();
+    public static ContainerFragment newInstance() {
+        ContainerFragment fragment = new ContainerFragment();
         return fragment;
     }
 
@@ -36,12 +38,12 @@ public class ContainerListsFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_container_lists, container, false);
 
         FragmentManager mFragmentManager = getChildFragmentManager();
-//        FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();
 
         if (savedInstanceState == null) {
             mFragmentManager.beginTransaction()
                     .add(R.id.containerFrame, DBPhotosFragment.newInstance(), TAG_DB)
                     .commit();
+            currentTag = TAG_DB;
         }
 
         BottomNavigationView bnv = getActivity().findViewById(R.id.bnv);
@@ -68,7 +70,7 @@ public class ContainerListsFragment extends Fragment {
                 case R.id.action_common:
                     Fragment photoListFragment = mFragmentManager.findFragmentByTag(TAG_COMMON);
                     if (photoListFragment == null) {
-                        photoListFragment = PhotoListFragment.newInstance();
+                        photoListFragment = CommonListFragment.newInstance();
                     }
                     mFragmentManager.beginTransaction()
                             .replace(R.id.containerFrame, photoListFragment, TAG_COMMON)
@@ -77,9 +79,7 @@ public class ContainerListsFragment extends Fragment {
             }
             return false;
         });
-
         return layout;
-
     }
 
 }

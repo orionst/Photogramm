@@ -1,10 +1,7 @@
 package com.orionst.mymaterialdesignapp.presentation.presenter;
 
-import android.annotation.SuppressLint;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.domain.ResourceManager;
 import com.orionst.mymaterialdesignapp.domain.model.entity.Image;
 import com.orionst.mymaterialdesignapp.presentation.view.ImageCellView;
@@ -21,14 +18,16 @@ import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
-public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPresenter {
+public class DBPhotosPresenter extends MvpPresenter<PhotoView> implements IPresenter {
 
-    private Scheduler scheduler;
-    private List<Image> imageList = new ArrayList<>();
-    private List<Image> imageListNew;
+    private Scheduler observeScheduler;
     @Inject RealmRepository dbRepo;
     @Inject
-    @Named("DB") ResourceManager resourceManager;
+    @Named("DB")
+    ResourceManager resourceManager;
+
+    private List<Image> imageList = new ArrayList<>();
+    private List<Image> imageListNew;
 
     private ImageListPresenter imageListPresenter = new ImageListPresenter();
 
@@ -66,43 +65,42 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
             getViewState().onPhotoView(photoUriString);
         }
 
-        @SuppressLint("CheckResult")
         @Override
         public void deleteImage(int position) {
             dbRepo.deleteImageFromDB(imageList.get(position))
                     .subscribeOn(Schedulers.io())
-                    .observeOn(scheduler)
+                    .observeOn(observeScheduler)
                     .subscribe(
                             () -> {
-                                getViewState().showNotification(resourceManager.getString(R.string.alert_photo_deleted));
+                                getViewState().showNotification(resourceManager.getStringNotificationOnDeleteImage());
                                 getPhotoList();
                                 getViewState().sendReloadListMessage();
                             },
                             throwable ->
-                                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_delete_error)));
+                                    getViewState().showNotification(resourceManager.getStringNotificationOnDeleteImageError()));
         }
 
-        @SuppressLint("CheckResult")
         @Override
         public void onClickFavorite(int pos) {
             Image item = imageList.get(pos);
             dbRepo.updateImageInDB(item)
                     .subscribeOn(Schedulers.io())
-                    .observeOn(scheduler)
+                    .observeOn(observeScheduler)
                     .subscribe(
                             () -> {
-                                getViewState().showNotification(resourceManager.getString(item.isFavorite() ? R.string.alert_photo_favorite_unset : R.string.alert_photo_favorite_set));
+                                getViewState().showNotification(resourceManager.getStringNotificationOnChangeFavorite(item.isFavorite()));
                                 getPhotoList();
                                 getViewState().sendReloadListMessage();
                             },
                             throwable ->
-                                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_favorite_change_error)));
-        }
+                                    getViewState().showNotification(resourceManager.getStringNotificationOnErrorChangeFavorite()));
 
+        }
     }
 
-    public FavoritesPresenter(Scheduler observeScheduler) {
-        this.scheduler = observeScheduler;
+
+    public DBPhotosPresenter(Scheduler scheduler) {
+        this.observeScheduler = scheduler;
     }
 
     @Override
@@ -111,21 +109,19 @@ public class FavoritesPresenter extends MvpPresenter<PhotoView> implements IPres
         getPhotoList();
     }
 
-    @SuppressLint("CheckResult")
-    @Override
+    public ImageListPresenter getImageListPresenter() {
+        return imageListPresenter;
+    }
+
     public void getPhotoList() {
-        dbRepo.getFavoriteImages()
-                .observeOn(scheduler)
+        dbRepo.getAllImages()
+                .observeOn(observeScheduler)
                 .subscribe(images -> {
                     this.imageListNew = images;
                     getViewState().onNewImageList();
                 }, throwable -> {
-                    getViewState().showNotification(resourceManager.getString(R.string.alert_photo_get_list_error));
+                    getViewState().showNotification(resourceManager.getStringNotificationOnErrorGetPhotoList());
                 });
-    }
-
-    public ImageListPresenter getImageListPresenter() {
-        return imageListPresenter;
     }
 
     @Override
