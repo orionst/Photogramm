@@ -158,11 +158,11 @@ public class CommonListPresenter extends MvpPresenter<PhotoView> implements IPre
 //                                    imageListNew.add(0,image);
 //                                    getViewState().onNewImageList();
 //                                });
-                    getPhotoList();
                         },
                         throwable -> {
                             getViewState().showNotification(resourceManager.getStringNotificationOnNewImageError());
                         }
                 );
+        getPhotoList();
     }
 }

@@ -29,8 +29,13 @@ import com.orionst.mymaterialdesignapp.App;
 import com.orionst.mymaterialdesignapp.R;
 import com.orionst.mymaterialdesignapp.ViewerActivity;
 import com.orionst.mymaterialdesignapp.fragments.adapters.ImageListAdapter;
+import com.orionst.mymaterialdesignapp.fragments.eventbus.ReloadImagesEvent;
 import com.orionst.mymaterialdesignapp.presentation.presenter.CommonListPresenter;
 import com.orionst.mymaterialdesignapp.presentation.view.PhotoView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,6 +106,18 @@ public class CommonListFragment extends MvpAppCompatFragment implements PhotoVie
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable("outputFileUri", photoURI);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -195,6 +212,14 @@ public class CommonListFragment extends MvpAppCompatFragment implements PhotoVie
 
     @Override
     public void sendReloadListMessage() {
-
+        EventBus.getDefault().post(new ReloadImagesEvent(this));
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(ReloadImagesEvent event) {
+        if (!(event.getFragment() instanceof CommonListFragment)) {
+            presenter.onMessageEvent();
+        }
+    }
+
 }

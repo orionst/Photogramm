@@ -104,11 +104,13 @@ public class DBPhotosFragment extends MvpAppCompatFragment implements PhotoView 
 
     @Override
     public void sendReloadListMessage() {
-        EventBus.getDefault().post(new ReloadImagesEvent(true));
+        EventBus.getDefault().post(new ReloadImagesEvent(this));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ReloadImagesEvent event) {
-        presenter.onMessageEvent();
+        if (!(event.getFragment() instanceof DBPhotosFragment)) {
+            presenter.onMessageEvent();
+        }
     }
 }
